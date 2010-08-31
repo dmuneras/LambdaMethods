@@ -1,9 +1,9 @@
 name: LambdaMethods
-version: 0.3.0
+version: 0.1.0
 cabal-version: >= 1.1
 license: GPL
 license-file: LICENSE
-copyright: (c)2009  Esteban Alarcon Ceballos & Daniel Munera Sanchez
+copyright: (c)2010  Esteban Alarcon Ceballos & Daniel Munera Sanchez
 author:	    Esteban Alarcon Ceballos<ealarco1@eafit.edu.co>
 	    Daniel Munera Sanchez<dmuneras@eafit.edu.co>
 maintainer: Esteban Alarcon Ceballos<ealarco1@eafit.edu.co>

@@ -66,7 +66,11 @@ pOperMult =  FMult <$ pKey "*"
 pOperSum :: Parser Token (Func -> Func -> Func)
 pOperSum =  FSum <$ pKey "+"
         <|> FRes <$ pKey "-"
-    
+
+{-Parser que reconoce un termino de respuesta
+-}
+--pResp :: Parser Token Fun
+--pResp     
 {-Parser que reconoce un termino
 -}
 pTerm :: Parser Token Func
@@ -134,11 +138,6 @@ pTupla :: Parser Token (Double,Double)
 pTupla = f <$> pDouble <* pComma <*> pDouble
          where f a b = (a,b)
 
---instance Eq Func where
---    FConst f == FConst a =  f == a
---    FConst _ == FVar _ =  False 
---    FVar _ == FConst _ =  False
---    FVar x   == FVar y   =  x == y 
 
      
     

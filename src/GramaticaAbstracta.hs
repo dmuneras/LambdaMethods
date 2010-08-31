@@ -20,3 +20,10 @@ data Func = FConst Double  	--Una constante
           | Func Func           --Funcion que recibe cualquier de las demas funciones
 	deriving (Show,Eq,Ord)
 
+data Resp = RSim Func           -- Una respuesta simple, se utiliza cuando se encuentra la un valor exacto como resultado.
+          | RInt (Func,Func)    -- Respuesta como intervalo
+        deriving (Show,Eq,Ord)  
+
+
+    
+   

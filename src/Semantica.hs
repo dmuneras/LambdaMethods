@@ -3,6 +3,7 @@ module Semantica where
 import GramaticaConcreta
 import GramaticaAbstracta
 
+
 {-Funcion que sustituye una variable en una funcion
 -}
 sust :: Func -> (Char, Func) -> Func
