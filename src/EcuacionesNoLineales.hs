@@ -27,7 +27,24 @@ busqdIncremental f a d i
     | (otherwise) = (busqdIncremental f (FSum a d) d (i-1))
 
 
-biseccion f xi xs tol iter 
+biseccion f xi xs e  tol iterMax
           | raiz f xi == True = "Encontre Raiz: " ++ (show xi) 
           | raiz f xs == True = "Encontre raiz: " ++ (show xs)
-          | signo f xi xs == False = "intervalo inadecuado" 
+          | otherwise = biseccion' f xi xs  e tol iterMax 
+
+
+--biseccion' :: Func -> Func -> Func -> Func -> Func -> Integer -> IO()
+biseccion' f x y e tol iter 
+    | (ym /= (FConst 0) && e > tol && iter>0) = if (signo f x y) 
+                                  then (biseccion' f x xm e tol (iter-1)) 
+                                  else (biseccion' f xm y e tol (iter-1))
+    | (raiz f xm == True) = "Encontre Raiz: " ++ (show xm)
+    | (e <= tol) = (show xm) ++ " es raiz con un error de" ++ (show e)
+    | otherwise = "se sobrepaso el numero de iteraciones permitido"
+    where 
+          c = xm
+          xm = reduccion (FDiv (FSum x y) (FConst 2))
+          ym = (reduccion (sust f ('x',xm)))
+          e = (FRes(xm)(c))
+ 
+
