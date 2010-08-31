@@ -5,10 +5,11 @@ import GramaticaAbstracta
 import UU.Parsing
 import Graphics.UI.Gtk
 import Graphics.UI.Gtk.Glade
+import EcuacionesNoLineales
 
 process ::(EntryClass e)=> String -> e  -> IO ()
 process s e = do a <- parseIO pFunc (funScanTxt s)
-                 let st = eval a
+                 let st = busqdIncremental a (FConst (-2)) (FConst 1) 10
                  set e [ entryText := show st ]
 
 main = do
