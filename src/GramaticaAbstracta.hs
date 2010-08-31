@@ -18,12 +18,28 @@ data Func = FConst Double  	--Una constante
 	  | FCsc Func		--Funcion Cosecante
 	  | FCot Func		--Funcion Cotangente
           | Func Func           --Funcion que recibe cualquier de las demas funciones
-	deriving (Show,Eq,Ord)
+	deriving (Eq,Ord)
 
 data Resp = RSim Func           -- Una respuesta simple, se utiliza cuando se encuentra la un valor exacto como resultado.
           | RInt (Func,Func)    -- Respuesta como intervalo
         deriving (Show,Eq,Ord)  
 
+instance Show Func where
+    show (FConst a) = (show a)
+    show (FVar x) = [x]
+    show (FSum a b) = (show a) ++ "+" ++ (show b)
+    show (FRes a b) = (show a) ++ "-" ++ (show b)
+    show (FMult a b) = (show a) ++ "*" ++ (show b)
+    show (FDiv a b) = (show a) ++ "/" ++ (show b)
+    show (FPot a b) = (show a) ++"^" ++ "(" ++ (show b) ++ ")"
+    show (FExp a) = "E(" ++ (show a) ++ ")"
+    show (FLn a) = "LN(" ++ (show a) ++ ")"
+    show (FSen a) = "Sen(" ++ (show a) ++ ")"
+    show (FCos a) = "Cos(" ++ (show a) ++ ")"
+    show (FTan a) = "Tan(" ++ (show a) ++ ")"
+    show (FSec a) = "Sec(" ++ (show a) ++ ")"
+    show (FCsc a) = "Csc(" ++ (show a) ++ ")"
+    show (FCot a) = "Cot(" ++ (show a) ++ ")"
 
     
    
