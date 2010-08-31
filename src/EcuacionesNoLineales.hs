@@ -26,3 +26,8 @@ busqdIncremental f a d i
     | (signo f a (FSum a d) /= False) = [((reduccion a),(reduccion(FSum a d)))] 
     | (otherwise) = (busqdIncremental f (FSum a d) d (i-1))
 
+
+biseccion f xi xs tol iter 
+          | raiz f xi == True = "Encontre Raiz: " ++ (show xi) 
+          | raiz f xs == True = "Encontre raiz: " ++ (show xs)
+          | signo f xi xs == False = "intervalo inadecuado" 
