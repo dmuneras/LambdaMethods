@@ -4,10 +4,14 @@ import GramaticaConcreta
 import Semantica
 
 
+--Función que retorna el error absoluto 
+errorAbs ::Double-> Double -> Double
+errorAbs ac an = abs ( ac - an)  
+
 --Función para ver si hay cambio de signo en el intervalo 
 signo :: Func -> Func -> Func -> Bool
 signo f x y 
-          |(reduccion (FMult (sust f ('x',x)) (sust f ('x',y)))) < (FConst 0) = True
+          |(reduccion (FMult (reduccion(sust f ('x',x))) (reduccion (sust f ('x',y))))) < (FConst 0) = True
           | otherwise = False                                                             
 
 -- Función que me dice si es raiz
@@ -29,24 +33,26 @@ busqdIncremental f a d i
 
 {- Función que realiza bisección, esta basado en la función realizada por Carolina Campillo y Santiago Rodrigues 
 -} 
-biseccion :: Func -> Func -> Func -> Func -> Integer -> String
+biseccion :: Func -> Func -> Func -> Double -> Integer -> String
 biseccion f xi xs tol iterMax
           | raiz f xi == True = "Encontre Raiz: " ++ (show xi) 
           | raiz f xs == True = "Encontre raiz: " ++ (show xs)
-          | otherwise = biseccion' f xi xs xi (FSum (tol) (FConst 1)) tol iterMax 
+          | (signo f xi xs == False)  = "El intervalo es inadecuado"
+          | otherwise = biseccion' f xi xs (tol+1) tol (iterMax-1) 
 
 {- función que realiza la parte recursiva de la bisección -}
-biseccion' :: Func -> Func -> Func -> Func -> Func -> Func -> Integer -> String
-biseccion' f x y xm' e tol iter 
-    | (ym /= (FConst 0) && e > tol && iter>0) = if (signo f x y) 
-                                  then (biseccion' f x xm xm' e tol (iter-1)) 
-                                  else (biseccion' f xm y xm' e tol (iter-1))
+biseccion' :: Func -> Func -> Func -> Double -> Double -> Integer -> String
+biseccion' f x y  e tol iter 
+    | (ym /= (FConst 0) && e > tol && iter>0) = if (signo f x xm) 
+                                  then (biseccion' f x xm  e tol (iter-1)) 
+                                  else (biseccion' f xm y  e tol (iter-1))
     | (raiz f xm == True) = "Encontre Raiz: " ++ (show xm)
     | (e <= tol) = (show xm) ++ " es raiz con un error de" ++ (show e)
     | otherwise = "se sobrepaso el numero de iteraciones permitido"
     where 
+          xm' = xm
           xm = (reduccion (FDiv (FSum (x) (y)) (FConst 2)))
           ym = (reduccion (sust f ('x',xm)))
-          e =  FConst (abs(sacarNum (reduccion(FRes(xm)(xm')))))
- 
+          e =  errorAbs (sacarNum(xm)) (sacarNum(xm'))
+
 
