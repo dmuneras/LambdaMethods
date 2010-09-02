@@ -59,7 +59,7 @@ eval (FPot a b)
 		| (isCons a) && (isCons b) = FConst ((sacarNum (a)**(sacarNum (b))))
 		| otherwise                = FPot (eval a) (eval b)
 eval (FExp a)
-		| isCons a  = FConst ((2.7182)**(sacarNum (a)))
+		| isCons a  = FConst ((2.7182818284590452354)**(sacarNum (a)))
 		| otherwise = FExp (eval a)
 eval (FLn a)
 		| isCons a  = FConst (log (sacarNum (a)))
@@ -110,3 +110,32 @@ abs' (FTan a)   = FConst (abs (tan (sacarNum (a))))
 abs' (FSec a)   = FConst (abs (1/sin (sacarNum (a))))
 abs' (FCsc a)   = FConst (abs (1/cos (sacarNum (a))))
 abs' (FCot a)   = FConst (abs (1/tan (sacarNum (a))))
+
+{- Funciones de ayuda para copiar operaciones aritmeticas -}
+
+ton :: Double -> Func
+ton a = FConst a
+
+tov :: Char -> Func
+tov a = FVar a
+
+(+/) :: Func -> Func -> Func
+(+/) a b = FSum  a  b
+               
+(-/) :: Func -> Func -> Func
+(-/) a b = FRes  a  b
+
+(*/) :: Func -> Func -> Func
+(*/) a b = FMult  a  b
+
+(//) :: Func -> Func -> Func
+(//) a b = FDiv a  b
+
+(^/) :: Func -> Func -> Func
+(^/) a b = FPot  a  b
+
+
+
+
+
+ 

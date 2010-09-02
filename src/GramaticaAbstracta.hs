@@ -32,7 +32,7 @@ instance Show Func where
     show (FMult a b) = (show a) ++ "*" ++ (show b)
     show (FDiv a b) = (show a) ++ "/" ++ (show b)
     show (FPot a b) = (show a) ++"^" ++ "(" ++ (show b) ++ ")"
-    show (FExp a) = "E(" ++ (show a) ++ ")"
+    show (FExp a) = "e^(" ++ (show a) ++ ")"
     show (FLn a) = "LN(" ++ (show a) ++ ")"
     show (FSen a) = "Sen(" ++ (show a) ++ ")"
     show (FCos a) = "Cos(" ++ (show a) ++ ")"
@@ -41,5 +41,18 @@ instance Show Func where
     show (FCsc a) = "Csc(" ++ (show a) ++ ")"
     show (FCot a) = "Cot(" ++ (show a) ++ ")"
 
-    
+{-instance Num  Func  where 
+    (FConst ( a)) + (FConst ( b)) = (FConst (a+b)) 
+    (FConst a) - (FConst b) = (FConst (a-b))
+    (FConst a) * (FConst b) = (FConst (a*b))                            
+    signum (FConst a) = FConst (signum a)
+    abs (FConst a) = abs (FConst a) 
+    fromInteger  a =  (FConst ((fromInteger a)))
+ 
+instance Fractional Func where
+    (FConst a)/ (FConst b) = FConst ((a/b))
+    recip (FConst a) = FConst (recip a)
+    fromRational a = FConst (fromRational a)-} 
+   
+
    

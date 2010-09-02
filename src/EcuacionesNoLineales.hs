@@ -26,8 +26,8 @@ busqdIncremental :: Func -> Func -> Func -> Integer -> [(Func,Func)]
 busqdIncremental f a d 0 = []
 busqdIncremental f a d i
     | (raiz f a /= False) = [((reduccion a),(reduccion a))]
-    | (signo f a (FSum a d) /= False) = [((reduccion a),(reduccion (FSum a d)))]
-    | (otherwise) = (busqdIncremental f (FSum a d) d (i-1))
+    | (signo f a ( a +/ d) /= False) = [((reduccion a),(reduccion (a +/ d)))]
+    | (otherwise) = (busqdIncremental f ( a +/ d) d (i-1))
 
 {-METODO DE BISECCION
 NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
@@ -38,7 +38,7 @@ biseccion f xi xs tol n
     | (raiz f xi) = (show xi) ++ " es raiz" 
     | (raiz f xs) = (show xs) ++ " es raiz"
     | (not (signo f xi xs)) = "Intervalo incorrecto" 
-    | otherwise = (biseccion' f xi xs (FConst 0) (reduccion (FSum (tol) (FConst 1))) tol (n-1))
+    | otherwise = (biseccion' f xi xs (ton 0) (reduccion (tol +/ ton 1)) tol (n-1))
 
 
 --Funcion que realiza la biseccion 
@@ -51,7 +51,7 @@ biseccion' f xi xs xm'  e tol i
     | (e <= tol) = (show xm) ++ " es raiz con un error " ++ (show e)
     | otherwise = "El metodo no converge en las iteraciones dadas"
     where
-          xm = (reduccion (FDiv (FSum xi xs) (FConst 2)))
+          xm = (reduccion ((xi +/xs)//ton 2))
           ym = (sust f ('x', xm))
           err = abs' (FRes xm xm')
 
@@ -79,17 +79,17 @@ reglaFalsa' f a b p' e tol i
     where 
           p = (reduccion (FRes a (FDiv (FMult (reduccion (sust f ('x', a))) (FRes b a)) (FRes (reduccion (sust f ('x',b))) (reduccion (sust f ('x',a)))))))
           yp = (sust f ('x', p))
-          err = abs' (FRes p p')
+          err = abs' ( p -/ p')
 
 {-Se pueden probar las funciones de biseccion y regla falsa con esos parametros-}
 fun :: Func
-fun = (FRes (FPot (FVar 'x') (FConst 2)) (FConst 3))
+fun = tov 'x' ^/ ton 2 -/ ton 3
 
-a :: Func
-a = (FConst (-2))
+a1 :: Func
+a1 =  ton (-2)
 
 b :: Func
-b = (FConst (-1.5))
+b = ton (-1.5)
 
 tol :: Func
-tol = (FConst (0.005))
+tol = ton (0.005)

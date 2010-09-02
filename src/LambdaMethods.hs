@@ -9,7 +9,7 @@ import EcuacionesNoLineales
 
 process ::(EntryClass e)=> String -> e  -> IO ()
 process s e = do a <- parseIO pFunc (funScanTxt s)
-                 let st = biseccion a (FConst (-2)) (FConst 2) 0.01 10
+                 let st = biseccion a a1 b tol 10 
                  set e [ entryText := show st ]
 
 main = do
