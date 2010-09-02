@@ -90,3 +90,23 @@ reduccion t = let t' = eval t
               in if t == t'
                  then t'
                  else reduccion t'
+
+
+{-Funcion que saca el valor absoluto de una funcion
+-}
+abs' :: Func -> Func
+abs' (FConst c) = FConst (abs c)
+abs' (FVar x)   = error "Valor absoluto de variable"
+abs' (FSum a b) = FConst (abs ((sacarNum (a) + sacarNum (b))))
+abs' (FRes a b) = FConst (abs ((sacarNum (a) - sacarNum (b))))
+abs' (FMult a b)= FConst (abs ((sacarNum (a) * sacarNum (b))))
+abs' (FDiv a b) = FConst (abs ((sacarNum (a) / sacarNum (b))))
+abs' (FPot a b) = FConst (abs ((sacarNum (a) ** sacarNum (b))))
+abs' (FExp a)   = FConst (abs (exp (sacarNum (a))))
+abs' (FLn a)    = FConst (abs (log (sacarNum (a))))
+abs' (FSen a)   = FConst (abs (sin (sacarNum (a))))
+abs' (FCos a)   = FConst (abs (cos (sacarNum (a))))
+abs' (FTan a)   = FConst (abs (tan (sacarNum (a))))
+abs' (FSec a)   = FConst (abs (1/sin (sacarNum (a))))
+abs' (FCsc a)   = FConst (abs (1/cos (sacarNum (a))))
+abs' (FCot a)   = FConst (abs (1/tan (sacarNum (a))))
