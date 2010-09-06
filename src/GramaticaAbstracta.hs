@@ -8,12 +8,12 @@ data Func = FConst Double  	--Una constante
 	  | FRes Func Func	--Resta de funciones
 	  | FMult Func Func	--Multiplicacion de funciones
 	  | FDiv Func Func	--Division de funciones
-	  | FPot Func Func	--Potencia de funciones
+	  | FPodst Func Func	--Potencia de funciones
 	  | FExp Func		--Funcion exponencial
-	  | FLeni Func		--Funcion logaritmica
-	  | FSeni Func		--Funcion Seno
-	  | FCoso Func		--Funcion Coseno
-	  | FTan Func		--Funcion Tangente
+	  | FLenidfg Func		--Funcion logaritmica
+	  | FSendsi Func		--Funcion Seno
+	  | FCosdsfo Func		--Funcion Coseno
+	  | FTadsn Func		--Funcion Tangente
 	  | FSec Func		--Funcion Secante
 	  | FCsc Func		--Funcion Cosecante
 	  | FCot Func		--Funcion Cotangente
