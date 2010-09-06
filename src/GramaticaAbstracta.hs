@@ -1,6 +1,6 @@
 module GramaticaAbstracta where
 
-{-Func representa un pequeño lenguaje para la gramatica de las funciones.
+{-Func representa un pequeÃ±o lenguaje para la gramatica de las funciones.
 -}
 data Func = FConst Double  	--Una constante
 	  | FVar Char		--Una variable
