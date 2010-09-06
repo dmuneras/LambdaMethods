@@ -10,10 +10,10 @@ data Func = FConst Double  	--Una constante
 	  | FDiv Func Func	--Division de funciones
 	  | FPot Func Func	--Potencia de funciones
 	  | FExp Func		--Funcion exponencial
-	  | FLeni Func		--Funcion logaritmica
+	  | FLn Func		--Funcion logaritmica
 	  | FSeni Func		--Funcion Seno
 	  | FCoso Func		--Funcion Coseno
-	  | FTan Func		--Funcion Tangente
+	  | FTane Func		--Funcion Tangente
 	  | FSec Func		--Funcion Secante
 	  | FCsc Func		--Funcion Cosecante
 	  | FCot Func		--Funcion Cotangente
