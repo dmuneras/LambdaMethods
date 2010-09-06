@@ -111,11 +111,12 @@ abs' (FSec a)   = FConst (abs (1/sin (sacarNum (a))))
 abs' (FCsc a)   = FConst (abs (1/cos (sacarNum (a))))
 abs' (FCot a)   = FConst (abs (1/tan (sacarNum (a))))
 
-{- Funciones de ayuda para copiar operaciones aritmeticas -}
+{- Funciones de ayuda para copiar operaciones aritmeticas (Helpers) -}
+
 
 ton :: Double -> Func
-ton a = FConst a
-
+ton a =  (FConst a) 
+   
 tov :: Char -> Func
 tov a = FVar a
 
@@ -133,8 +134,6 @@ tov a = FVar a
 
 (^/) :: Func -> Func -> Func
 (^/) a b = FPot  a  b
-
-
 
 
 

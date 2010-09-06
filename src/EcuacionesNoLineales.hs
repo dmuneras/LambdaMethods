@@ -93,3 +93,6 @@ b = ton (-1.5)
 
 tol :: Func
 tol = ton (0.005)
+
+funtarea:: Func
+funtarea = FExp ((ton (-2) */ tov 'x') +/ ton 4) -/ (tov 'x' */ FSen (tov 'x')) +/ (tov 'x')^/ ton 2 -/ ton 3
