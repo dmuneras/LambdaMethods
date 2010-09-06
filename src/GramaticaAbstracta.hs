@@ -10,9 +10,9 @@ data Func = FConst Double  	--Una constante
 	  | FDiv Func Func	--Division de funciones
 	  | FPot Func Func	--Potencia de funciones
 	  | FExp Func		--Funcion exponencial
-	  | FLn Func		--Funcion logaritmica
-	  | FSen Func		--Funcion Seno
-	  | FCos Func		--Funcion Coseno
+	  | FLeni Func		--Funcion logaritmica
+	  | FSeni Func		--Funcion Seno
+	  | FCoso Func		--Funcion Coseno
 	  | FTan Func		--Funcion Tangente
 	  | FSec Func		--Funcion Secante
 	  | FCsc Func		--Funcion Cosecante
@@ -35,7 +35,7 @@ instance Show Func where
     show (FExp a) = "e^(" ++ (show a) ++ ")"
     show (FLn a) = "LN(" ++ (show a) ++ ")"
     show (FSen a) = "Sen(" ++ (show a) ++ ")"
-    show (FCos b) = "Cos(" ++ (show b) ++ ")"
+    show (FCos a) = "Cos(" ++ (show a) ++ ")"
     show (FTan a) = "Tan(" ++ (show a) ++ ")"
     show (FSec a) = "Sec(" ++ (show a) ++ ")"
     show (FCsc a) = "Csc(" ++ (show a) ++ ")"
