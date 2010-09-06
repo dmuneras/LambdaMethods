@@ -35,7 +35,7 @@ instance Show Func where
     show (FExp a) = "e^(" ++ (show a) ++ ")"
     show (FLn a) = "LN(" ++ (show a) ++ ")"
     show (FSen a) = "Sen(" ++ (show a) ++ ")"
-    show (FCos a) = "Cos(" ++ (show a) ++ ")"
+    show (FCos b) = "Cos(" ++ (show b) ++ ")"
     show (FTan a) = "Tan(" ++ (show a) ++ ")"
     show (FSec a) = "Sec(" ++ (show a) ++ ")"
     show (FCsc a) = "Csc(" ++ (show a) ++ ")"
@@ -54,6 +54,3 @@ instance Fractional Func where
     recip (FConst a) = FConst (recip a)
     fromRational a = FConst (fromRational a)-} 
    
-
-   
-WEGBPOVMSPOMRVPOSMCDFPO
