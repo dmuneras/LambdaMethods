@@ -1,0 +1,20 @@
+module Graphics where 
+
+import EcuacionesNoLineales
+import qualified Graphics.Gnuplot.Advanced as Plot
+import qualified Graphics.Gnuplot.Terminal.X11 as X11
+import qualified Graphics.Gnuplot.Plot.TwoDimensional as Plot2D
+import qualified Graphics.Gnuplot.Graph.TwoDimensional as Graph2D
+import Graphics.Gnuplot.Plot.TwoDimensional (linearScale, )
+import qualified Data.Time as Time
+
+
+simple2d :: Plot2D.T Double Double
+simple2d =
+   Plot2D.function Graph2D.lines
+      (linearScale 100 (-20,20)) (\x -> (x / 2) + 8)
+
+main :: IO ()
+main =
+   do Plot.plot X11.cons  simple2d
+      return ()

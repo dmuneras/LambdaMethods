@@ -1,0 +1,28 @@
+--Funcion que retorna el valor de la derivada de un numero evaluada en un punto
+derivada :: Func -> Func -> Func
+derivada f x = reduccion ((((sust f ('x',( x +/ h)))) -/ (reduccion (sust f ('x', x)))) // h)
+                where h = ton 0.0001
+--Funcion que retorna la segunda derivada de una funcion, evaluada en un punto.
+sdaDerivada :: Func -> Func -> Func
+sdaDerivada f  n = reduccion(((reduccion (sust f ('x', n +/ h))) -/ (ton 2 */ (reduccion (sust f ('x',n)))) +/ (reduccion (sust f ('x',n -/ h)))) // (h^/ (ton 2)))
+                 where h = ton 0.0001
+
+--Funcion que recibe los datos e inicia el ciclo principal de raicesMultiples.
+raicesMult :: Func -> Func -> Func ->Integer -> String
+raicesMult f a tol i = raicesMult' f a (tol +/ ton 1) tol i
+
+--Funcion de raices multiples utilizando metodos numericos para hallar la primera y segunda derivada de la funcion.
+raicesMult' :: Func -> Func -> Func -> Func -> Integer -> String
+raicesMult' f x0 e tol i 
+           | ((not(raiz f x1)) && e > tol && den /= (ton 0) && i > 0) = raicesMult' f x1 err tol (i-1)
+           | (raiz f x1) = (show x1) ++ " es raiz"
+           | (e <= tol) = (show x1) ++ " es raiz con un error " ++ (show e)
+           | (den == (ton 0) ) = "Denomidador igual a 0"
+           | otherwise = "El metodo no converge en las iteraciones dadas"
+           where y = reduccion(sust f ('x',x0))
+                 den = reduccion (((derivada f x0) ^/ ton 2) -/ (y */ (sdaDerivada f x0)))
+                 x1 = reduccion (x0 -/ ((y */ (derivada f x0)) // den))
+                 err = abs'(x1 -/ x0)
+    
+
+

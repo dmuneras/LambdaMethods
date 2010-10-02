@@ -1,0 +1,60 @@
+module Main where
+
+import Semantica
+import GramaticaConcreta
+import GramaticaAbstracta
+import EcuacionesNoLineales
+import UU.Parsing
+import Graphics.UI.Gtk
+import Graphics.UI.Gtk.Glade
+--import Prelude
+
+process ::(EntryClass e)=> String -> e  -> IO ()
+process s e = do a <- parseIO pFunc (funScanTxt s)
+                 let st = show a --busqdIncremental a (FConst (0.0)) (FConst (1e-3)) 10
+                 set e [ entryText := show st ]
+
+main = do
+  initGUI
+  Just xml    <- xmlNew "interfazmethods.glade"
+  ventana     <- xmlGetWidget xml castToWindow "window1"
+  onDestroy ventana mainQuit
+  boton   <- xmlGetWidget xml castToButton "button1"
+  entrada <- xmlGetWidget xml castToEntry "entry1"
+  salida  <- xmlGetWidget xml castToEntry "entry2"
+  onClicked boton $ do
+        texto <- get entrada entryText
+        process texto salida
+  onEntryActivate entrada $ do
+        texto <- get entrada entryText
+        process texto salida
+  widgetShowAll ventana
+  mainGUI
+
+-- process :: String -> String -> String -> Integer -> IO ()
+-- process f a d n = do fun <- parseIO pFunc (funScanTxt f)
+--                      vlr <- parseIO pFunc (funScanTxt a)
+--                      del <- parseIO pFunc (funScanTxt d)
+--                      let st  = busqdIncremental fun vlr del n
+--                      putStr "> "
+--                      print fun
+--                      putStr "> Resultado: "
+--                      print st
+
+-- help  = "> Para salir ingrese 'quit'\n> Para usar un metodo ingrese primero el nombre y luego sus parametros. \n> Los metodos soportados son: \n> bsqdIncremental (Parametros: Funcion, Punto inicial, Delta, Iteraciones)\n> biseccion (Parametros: Funcion, Valor izquierdo, Valor derecho, Tolerancia, Iteraciones)\n> reglaFalsa (Parametros: Funcion, Valor izquierdo, Valor derecho, Tolerancia, Iteraciones)\n> puntoFijo (Parametro: Funcion, Funcion g, Valor inicial, Tolerancia, Iteraciones)\n> newton (Parametros: Funcion, Primera derivada, Valor inicial, Tolerancia, Iteraciones)\n> secante (Parametros: Funcion, Valor inicial 1, Valor inicial 2, Tolerancia, Iteraciones)\n> raicesMultiples (Parametros: Funcion, Primera derivada, Segunda derivada, Valor inicial, Tolerancia, Iteraciones)"
+
+-- giveLine =
+--     do putStr "> "
+--        answer <- getLine
+--        case answer of
+--          "help" -> putStrLn help >> giveLine
+--          "quit" -> putStrLn "> Hasta Pronto"
+--          _     ->  giveLine
+
+
+--               -- if (a /= "quit" && a /= "help")
+-- --                then process a >> giveLine  else if a == "help"
+-- --                 then putStrLn help >> giveLine else putStrLn "> Hasta Pronto"
+
+-- main = do putStrLn "> Ingrese un nombre de metodo y los parametros para calcular sus raices, cada instruccion se debe ingresar en una linea distinta. Para ayuda ingrese 'help'"
+--           giveLine
