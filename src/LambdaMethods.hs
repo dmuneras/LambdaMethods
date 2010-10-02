@@ -9,8 +9,8 @@ import EcuacionesNoLineales
 
 process ::(EntryClass e)=> String -> e  -> IO ()
 process s e = do a <- parseIO pFunc (funScanTxt s)
-                 let st = biseccion a a1 b tol 10 
-                 set e [ entryText := show st ]
+                   let st = reglaFalsa a (FConst 2) (FConst 2.1) (FConst 0)((FConst 0.001) +/ ton 1))(FConst (0.001)  2 
+                   set e [ entryText := show st ]
 
 main = do
   initGUI
@@ -18,7 +18,7 @@ main = do
   ventana     <- xmlGetWidget xml castToWindow "window1"
   onDestroy ventana mainQuit
   boton   <- xmlGetWidget xml castToButton "button1"
-  entrada <- xmlGetWidget xml castToEntry "entry1"
+  entrada <- xmlGetWidget xml castToEntry "input"
   salida  <- xmlGetWidget xml castToEntry "entry2"
   onClicked boton $ do
         texto <- get entrada entryText

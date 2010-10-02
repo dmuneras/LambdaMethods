@@ -135,6 +135,20 @@ tov a = FVar a
 (^/) :: Func -> Func -> Func
 (^/) a b = FPot  a  b
 
+cos_ :: Func -> Func
+cos_ a = FCos a
+
+sen_ :: Func -> Func
+sen_ a = FSen a
+
+tan_ :: Func -> Func
+tan_ a = FTan a
+
+sec_ :: Func -> Func 
+sec_ a = FSec a
+
+csc_ :: Func -> Func
+csc_ a = FCsc a
 
 
  
