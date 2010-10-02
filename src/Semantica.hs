@@ -3,7 +3,6 @@ module Semantica where
 import GramaticaConcreta
 import GramaticaAbstracta
 
-
 {-Funcion que sustituye una variable en una funcion
 -}
 sust :: Func -> (Char, Func) -> Func
@@ -25,7 +24,6 @@ sust (FSec a) s@(var, f)   = FSec (sust a s)
 sust (FCsc a) s@(var, f)   = FCsc (sust a s)
 sust (FCot a) s@(var, f)   = FCot (sust a s)
 
-	
 {-Funcion que determina si una funcion es constante          
 -}
 isCons :: Func -> Bool
@@ -37,60 +35,6 @@ isCons _          = False
 sacarNum :: Func -> Double
 sacarNum (FConst a) = a
 sacarNum _          = error "No const"
-
-{-Funcion que reduce los terminos de una funcion y de sus subterminos
--}          
-eval :: Func -> Func
-eval (FConst c) = FConst c
-eval (FVar x)   = FVar x
-eval (FSum a b)
-		| (isCons a) && (isCons b) = FConst (sacarNum (a)+ sacarNum (b))
-		| otherwise                =  FSum (eval a) (eval b)
-eval (FRes a b)
-		| (isCons a) && (isCons b) = FConst (sacarNum (a)- sacarNum (b))
-		| otherwise                =  FRes (eval a) (eval b)
-eval (FMult a b)
-		| (isCons a) && (isCons b) = FConst (sacarNum (a)* sacarNum (b))
-		| otherwise                =  FMult (eval a) (eval b)
-eval (FDiv a b)
-		| (isCons a) && (isCons b) = FConst (sacarNum (a)/ sacarNum (b))
-		| otherwise                = FDiv (eval a) (eval b)
-eval (FPot a b)
-		| (isCons a) && (isCons b) = FConst ((sacarNum (a)**(sacarNum (b))))
-		| otherwise                = FPot (eval a) (eval b)
-eval (FExp a)
-		| isCons a  = FConst ((2.7182818284590452354)**(sacarNum (a)))
-		| otherwise = FExp (eval a)
-eval (FLn a)
-		| isCons a  = FConst (log (sacarNum (a)))
-		| otherwise = FLn (eval a)
-eval (FSen a)
-		| isCons a  = FConst (sin (sacarNum (a)))
-		| otherwise = FSen (eval a)
-eval (FCos a)
-		| isCons a  = FConst (cos (sacarNum (a)))
-		| otherwise = FCos (eval a)
-eval (FTan a)
-		| isCons a  = FConst (tan (sacarNum (a)))
-		| otherwise = FTan (eval a)
-eval (FCot a)
-		| isCons a  = FConst (1/tan(sacarNum (a)))
-		| otherwise = FCot (eval a)
-eval (FSec a)
-		| isCons a  = FConst (1/cos (sacarNum (a)))
-		| otherwise = FSec (eval a)
-eval (FCsc a)
-		| isCons a  = FConst (1/sin (sacarNum (a)))
-		| otherwise = FCsc (eval a)
-
-{-Funcion que determina hasta que punto se reduce
--}
-reduccion :: Func -> Func
-reduccion t = let t' = eval t
-              in if t == t'
-                 then t'
-                 else reduccion t'
-
 
 {-Funcion que saca el valor absoluto de una funcion
 -}
@@ -111,29 +55,91 @@ abs' (FSec a)   = FConst (abs (1/sin (sacarNum (a))))
 abs' (FCsc a)   = FConst (abs (1/cos (sacarNum (a))))
 abs' (FCot a)   = FConst (abs (1/tan (sacarNum (a))))
 
+{-Funcion que reduce los terminos de una funcion y de sus subterminos
+-}          
+resolution :: Func -> Func
+resolution (FConst c) = FConst c
+resolution (FVar x)   = FVar x
+resolution (FSum a b)
+		| (isCons a) && (isCons b) = FConst (sacarNum (a)+ sacarNum (b))
+		| otherwise                =  FSum (resolution a) (resolution b)
+resolution (FRes a b)
+		| (isCons a) && (isCons b) = FConst (sacarNum (a)- sacarNum (b))
+		| otherwise                =  FRes (resolution a) (resolution b)
+resolution (FMult a b)
+		| (isCons a) && (isCons b) = FConst (sacarNum (a)* sacarNum (b))
+		| otherwise                =  FMult (resolution a) (resolution b)
+resolution (FDiv a b)
+		| (isCons a) && (isCons b) = FConst (sacarNum (a)/ sacarNum (b))
+		| otherwise                = FDiv (resolution a) (resolution b)
+resolution (FPot a b)
+		| (isCons a) && (isCons b) = FConst ((sacarNum (a)**(sacarNum (b))))
+		| otherwise                = FPot (resolution a) (resolution b)
+resolution (FExp a)
+		| isCons a  = FConst (exp (sacarNum (a)))
+		| otherwise = FExp (resolution a)
+resolution (FLn a)
+		| isCons a  = FConst (log (sacarNum (a)))
+		| otherwise = FLn (resolution a)
+resolution (FSen a)
+		| isCons a  = FConst (sin (sacarNum (a)))
+		| otherwise = FSen (resolution a)
+resolution (FCos a)
+		| isCons a  = FConst (cos (sacarNum (a)))
+		| otherwise = FCos (resolution a)
+resolution (FTan a)
+		| isCons a  = FConst (tan (sacarNum (a)))
+		| otherwise = FTan (resolution a)
+resolution (FCot a)
+		| isCons a  = FConst (1/tan(sacarNum (a)))
+		| otherwise = FCot (resolution a)
+resolution (FSec a)
+		| isCons a  = FConst (1/cos (sacarNum (a)))
+		| otherwise = FSec (resolution a)
+resolution (FCsc a)
+		| isCons a  = FConst (1/sin (sacarNum (a)))
+		| otherwise = FCsc (resolution a)
+
+{-Funcion que determina hasta que punto se reduce
+-}
+reduccion :: Func -> Func
+reduccion t = let t' = resolution t
+              in if t == t'
+                 then t'
+                 else reduccion t'
+
+{-Funcion que evalua una funcion en un punto dado
+-}
+eval :: Func -> (Char, Func) -> Func
+eval f a@(v, c) = reduccion (sust f a)
+
 {- Funciones de ayuda para copiar operaciones aritmeticas (Helpers) -}
-
-
 ton :: Double -> Func
-ton a =  (FConst a) 
+ton a = FConst a
    
 tov :: Char -> Func
 tov a = FVar a
 
 (+/) :: Func -> Func -> Func
-(+/) a b = FSum  a  b
+(+/) a b = FSum a b
                
 (-/) :: Func -> Func -> Func
-(-/) a b = FRes  a  b
+(-/) a b = FRes a b
 
 (*/) :: Func -> Func -> Func
-(*/) a b = FMult  a  b
+(*/) a b = FMult a b
 
 (//) :: Func -> Func -> Func
-(//) a b = FDiv a  b
+(//) a b = FDiv a b
 
 (^/) :: Func -> Func -> Func
-(^/) a b = FPot  a  b
+(^/) a b = FPot a b
+
+toexp :: Func -> Func
+toexp a = FExp a
+
+toln :: Func -> Func
+toln a = FLn a
 
 cos_ :: Func -> Func
 cos_ a = FCos a
@@ -144,11 +150,11 @@ sen_ a = FSen a
 tan_ :: Func -> Func
 tan_ a = FTan a
 
-sec_ :: Func -> Func 
+sec_ :: Func -> Func
 sec_ a = FSec a
 
 csc_ :: Func -> Func
 csc_ a = FCsc a
 
-
- 
+cot_ :: Func -> Func
+cot_ a = FCot a

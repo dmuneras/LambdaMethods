@@ -7,16 +7,16 @@ import EcuacionesNoLineales
 import UU.Parsing
 import Graphics.UI.Gtk
 import Graphics.UI.Gtk.Glade
---import Prelude
+import Prelude
 
 process ::(EntryClass e)=> String -> e  -> IO ()
 process s e = do a <- parseIO pFunc (funScanTxt s)
-                 let st = a 
+                 let st = show a --busqdIncremental a (FConst (0.0)) (FConst (1e-3)) 10
                  set e [ entryText := show st ]
 
 main = do
   initGUI
-  Just xml    <- xmlNew "interfazintegrator.glade"
+  Just xml    <- xmlNew "interfazmethods.glade"
   ventana     <- xmlGetWidget xml castToWindow "window1"
   onDestroy ventana mainQuit
   boton   <- xmlGetWidget xml castToButton "button1"
@@ -30,4 +30,3 @@ main = do
         process texto salida
   widgetShowAll ventana
   mainGUI
-

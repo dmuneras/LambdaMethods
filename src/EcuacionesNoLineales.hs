@@ -3,147 +3,216 @@ module EcuacionesNoLineales where
 import GramaticaAbstracta
 import GramaticaConcreta
 import Semantica
-
-{-FUNCIONES AUXILIARES
-Estas funciones son utilizadas por los difetentes metodos lo modulo, son adaptadas de la practica del semestre 2010-1 realizada por Santiago Rodriguez y Carolina Campillo
-
--}--Funcion que determina si hay cambio de signo en la funcion evaluada en dos puntos
-signo :: Func -> Func -> Func -> Bool
-signo f a b
-          |(reduccion (FMult (sust f ('x',a)) (sust f ('x',b)))) < (FConst 0) = True
+import UU.Parsing
+       | reduccion ((sust f ('x',a)) */ (sust f ('x',b))) < (ton 0) = True
           | otherwise = False                                                             
 
 -- Funcion que determina si se esta parado en una raiz
 raiz :: Func -> Func -> Bool     
 raiz f x
-     | reduccion (sust f ('x',x)) == FConst 0  = True
+     | (eval f ('x',x)) == (ton 0)  = True
      | otherwise = False
 
 --Funcion que retorna el valor de la derivada de un numero evaluada en un punto
 derivada :: Func -> Func -> Func
-derivada f x = reduccion ((((sust f ('x',( x +/ h)))) -/ (reduccion (sust f ('x', x)))) // h)
+derivada f x = reduccion ((eval f ('x',( x +/ h))) -/ (eval f ('x', x)) // h)
                 where h = ton 0.0001
+
 --Funcion que retorna la segunda derivada de una funcion, evaluada en un punto.
 sdaDerivada :: Func -> Func -> Func
-sdaDerivada f  n = reduccion(((reduccion (sust f ('x', n +/ h))) -/ (ton 2 */ (reduccion (sust f ('x',n)))) +/ (reduccion (sust f ('x',n -/ h)))) // (h^/ (ton 2)))
-                 where h = ton 0.000001
+sdaDerivada f  n = reduccion(((eval f ('x', n +/ h))) -/ (ton 2 */ (eval f ('x',n))) +/ (eval f ('x',n -/ h)) // (h^/ (ton 2)))
+                 where h = ton 0.0001
+
+--Funcion que recibe el tipo de error a calcular, los valores actual y anterior y retorna el error deseado
+error' :: String -> Func -> Func -> Func
+error' t act ant
+       | t == "abs" = eAbs act ant
+       | t == "rel" = eRel act ant
+       | otherwise  = error "No existe ese tipo de error"
+
+--Funcion que calcula el error absoluto
+eAbs :: Func -> Func -> Func
+eAbs act ant = abs' (act -/ ant)
+
+--Funcion que calcula el error relativo
+eRel :: Func -> Func -> Func
+eRel act ant = abs' (reduccion (act -/ ant) // act)
 
 {-METODO DE BUSQUEDAS INCREMENTALES
 NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
 -}
--- Funcion que realiza la busqueda incremental de un intervalo que contenga almenos una raiz
+--Funcion que realiza la busqueda incremental de un intervalo que contenga almenos una raiz
 busqdIncremental :: Func -> Func -> Func -> Integer -> [(Func,Func)]
-busqdIncremental f a d 0 = []
+busqdIncremental f a d 0 = error "El metodo no converge en las iteraciones dadas"
 busqdIncremental f a d i
-    | (raiz f a /= False) = [((reduccion a),(reduccion a))]
-    | (signo f a ( a +/ d) /= False) = [((reduccion a),(reduccion (a +/ d)))]
-    | (otherwise) = (busqdIncremental f ( a +/ d) d (i-1))
-
+    | (raiz f a) = [((reduccion a),(reduccion a))]
+    | (signo f a (a +/ d)) = [((reduccion a),(reduccion (a +/ d)))]
+    | (otherwise) = (busqdIncremental f (a +/ d) d (i-1))
+ 
 {-METODO DE BISECCION
 NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
 -}
--- Funcion que realiza los chequeos de entrada y que ordena iniciar el ciclo principal
-biseccion :: Func -> Func -> Func -> Func -> Integer -> String
-biseccion f xi xs tol n
+--Funcion que realiza los chequeos de entrada y ordena iniciar el ciclo principal
+biseccion :: Func -> Func -> Func -> Func -> Integer -> String -> String
+biseccion f xi xs tol n typErr
     | (raiz f xi) = (show xi) ++ " es raiz" 
     | (raiz f xs) = (show xs) ++ " es raiz"
     | (not (signo f xi xs)) = "Intervalo incorrecto" 
-    | otherwise = (biseccion' f xi xs (ton 0) (reduccion (tol +/ ton 1)) tol (n-1))
+    | (otherwise) = (biseccion' f xi xs (ton 0) (reduccion ((tol) +/ (ton 1))) tol (n-1) typErr)
 
 
 --Funcion que realiza la biseccion 
-biseccion' :: Func -> Func -> Func -> Func -> Func -> Func -> Integer -> String
-biseccion' f xi xs xm'  e tol i
-    | (ym /= (FConst 0) && e > tol && i>0) = if (not (signo f xi xm)) 
-                                             then (biseccion' f xm xs xm err tol (i-1)) 
-                                             else (biseccion' f xi xm xm err tol (i-1))
+biseccion' :: Func -> Func -> Func -> Func -> Func -> Func -> Integer -> String -> String
+biseccion' f xi xs xm' e tol i typErr
+    | ((not (raiz f xm)) && e > tol && i>0) = if (not (signo f xi xm)) 
+                                             then (biseccion' f xm xs xm err tol (i-1) typErr) 
+                                             else (biseccion' f xi xm xm err tol (i-1) typErr)
     | (raiz f xm) = (show xm) ++ " es raiz"
     | (e <= tol) = (show xm) ++ " es raiz con un error " ++ (show e)
-    | otherwise = "El metodo no converge en las iteraciones dadas"
-    where
-          xm = (reduccion ((xi +/xs)//ton 2))
-          ym = (sust f ('x', xm))
-          err = abs' (FRes xm xm')
+    | (otherwise) = "El metodo no converge en las iteraciones dadas"
+    where xm = (reduccion ((xi +/ xs) // (ton 2)))
+          err = error' typErr xm xm'
 
 {-METODO DE REGLA FALSA
 NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
 -}
--- Funcion que realiza los chequeos de entrada y que ordena iniciar el ciclo principal
-reglaFalsa :: Func -> Func -> Func -> Func -> Integer -> String
-reglaFalsa f a b tol n
+--Funcion que realiza los chequeos de entrada y ordena iniciar el ciclo principal
+reglaFalsa :: Func -> Func -> Func -> Func -> Integer -> String -> String
+reglaFalsa f a b tol n typErr
     | (raiz f a) = (show a) ++ " es raiz" 
     | (raiz f b) = (show b) ++ " es raiz"
     | (not (signo f a b)) = "Intervalo incorrecto" 
-    | otherwise = (biseccion' f a b (FConst 0)(reduccion (FSum (tol) (FConst 1))) tol (n-1))
+    | (otherwise) = (reglaFalsa' f a b (ton 0) (reduccion ((tol) +/ (ton 1))) tol (n-1) typErr)
 
 
 --Funcion que realiza el metodo de regla falsa 
-reglaFalsa' :: Func -> Func -> Func -> Func -> Func -> Func -> Integer -> String
-reglaFalsa' f a b p' e tol i
-    | (yp /= (FConst 0) && e > tol && i>0) = if (not (signo f a p)) 
-                                             then (biseccion' f p b p' err tol (i-1)) 
-                                             else (biseccion' f a p p' err tol (i-1))
+reglaFalsa' :: Func -> Func -> Func -> Func -> Func -> Func -> Integer -> String -> String
+reglaFalsa' f a b p' e tol i typErr
+    | ((not (raiz f p)) && e > tol && i>0) = if (not (signo f a p)) 
+                                             then (biseccion' f p b p err tol (i-1) typErr) 
+                                             else (biseccion' f a p p err tol (i-1) typErr)
     | (raiz f p) = (show p) ++ " es raiz"
-    | (err <= tol) = (show p) ++ " es raiz con un error " ++ (show e)
+    | (e <= tol) = (show p) ++ " es raiz con un error " ++ (show e)
     | otherwise = "El metodo no converge en las iteraciones dadas"
-    where 
-          p = (reduccion (FRes a (FDiv (FMult (reduccion (sust f ('x', a))) (FRes b a)) (FRes (reduccion (sust f ('x',b))) (reduccion (sust f ('x',a)))))))
-          yp = (sust f ('x', p))
-          err = abs' ( p -/ p')
+    where p = (reduccion (a -/ (((eval f ('x', a)) */ (b -/ a)) // ((eval f ('x',b)) -/ (eval f ('x',a))))))
+          err = error' typErr p p'
 
+
+{-METODO DE PUNTO FIJO
+NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
+-}
 --Funcion que recibe los datos y ordena iniciar el ciclo principal
-puntoFijo :: Func -> Func -> Func -> Func -> Integer -> String
-puntoFijo f g x0 tol n = puntoFijo' f g x0 (reduccion ((tol) `FSum` (FConst 1))) tol n
+puntoFijo :: Func -> Func -> Func -> Func -> Integer -> String -> String
+puntoFijo f g x0 tol n typErr = (puntoFijo' f g x0 (reduccion ((tol) +/ (ton 1))) tol n typErr)
 
 --Funcion que realiza el metodo de punto fijo
-puntoFijo' :: Func -> Func -> Func -> Func -> Func -> Integer -> String
-puntoFijo' f g x0 e tol i
-    | ((not (raiz f x1)) && e > tol && i > 0) = puntoFijo' f g x1 err tol (i-1)
+puntoFijo' :: Func -> Func -> Func -> Func -> Func -> Integer -> String -> String
+puntoFijo' f g x0 e tol i typErr
+    | ((not (raiz f x1)) && e > tol && i > 0) = (puntoFijo' f g x1 err tol (i-1) typErr)
     | (raiz f x1) = (show x1) ++ " es raiz"
     | (e <= tol)  = (show x1) ++ " es raiz con un error " ++ (show e)
     | (otherwise) = "El metodo no converge en las iteraciones dadas"
-    where x1 = reduccion (sust g ('x', x0))
-          err = abs' (x1 -/ x0)
+    where x1 = eval g ('x', x0)
+          err = error' typErr x1 x0
 
+{-METODO DE NEWTON
+NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
+-}
+--Funcion que recibe los datos y ordena iniciar el ciclo principal
+newton :: Func -> Func -> Func -> Func -> Integer -> String -> String
+newton f f' x0 tol n typErr = (newton' f f' x0 (reduccion ((tol) +/ (ton 1))) tol n typErr)
 
+--Funcion que realiza el metodo de newton
+newton' :: Func -> Func -> Func -> Func -> Func -> Integer -> String -> String
+newton' f f' x0 e tol  i typErr
+    | ((not (raiz f x1)) && e > tol && (not (raiz f' x1)) && i > 0) = (newton'  f f' x1 err tol (i-1) typErr)
+    | (raiz f x1) = (show x1) ++ "es raiz"
+    | (e <= tol)  = (show x1) ++ " es raiz con un error " ++ (show e)
+    | (raiz f' x1)= "La derivada se hizo cero -> Division por cero"
+    | (otherwise) = "El metodo no converge en las iteraciones dadas"
+    where x1 = reduccion (x0 -/ ((sust f ('x', x0)) // (sust f' ('x', x0))))
+          err = error' typErr x1 x0
+
+{-METODO DE LA SECANTE
+NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
+-}
+--Funcion que realiza los chequeos de entrada y ordena iniciar el ciclo principal
+secante :: Func -> Func -> Func -> Func -> Integer -> String -> String
+secante f x0 x1 tol n typErr
+        | (raiz f x0) = (show x0) ++ "es raiz"
+        | (otherwise) = (secante' f x0 x1 (reduccion ((tol) +/ (ton 1))) tol (n-1) typErr)
+
+--Funcion que realiza el metodo de la secante
+secante' :: Func -> Func -> Func -> Func -> Func -> Integer -> String -> String
+secante' f x0 x1 e tol i typErr
+	| ((not (raiz f x1)) && e > tol && denom /= (ton 0) && i>0) = (secante' f x1 x2 err tol (i-1) typErr)
+	| (raiz f x1) = (show x1) ++ "es raiz"
+	| (e <= tol) = (show x1) ++ "es raiz con un error " ++ (show e)
+	| (denom == (ton 0)) = "El denominador se hizo cero"
+	| (otherwise) = "El metodo no converge en las iteraciones dadas"
+	where 	x2 = reduccion (x1 -/ ((y1 */ (x1 -/ x0)) // denom))
+                denom = reduccion (y1 -/ y0)
+		y0 = eval f ('x', x0)
+                y1 = eval f ('x', x1)
+		err = error' typErr x2 x1 
+
+{-METODO DE RAICES MULTIPLES
+Este metodo esta completamente desarrollado por nosotros ya que en la practica del semestre 2010-1 no esta definido
+-}
 --Funcion que recibe los datos e inicia el ciclo principal de raicesMultiples.
-raicesMult :: Func -> Func -> Func ->Integer -> String
-raicesMult f a tol i = raicesMult' f a (tol +/ ton 1) tol i
+raicesMult :: Func -> Func -> Func ->Integer -> String -> String
+raicesMult f a tol n typErr = (raicesMult' f a (reduccion tol +/ ton 1) tol n typErr)
 
 --Funcion de raices multiples utilizando metodos numericos para hallar la primera y segunda derivada de la funcion.
-raicesMult' :: Func -> Func -> Func -> Func -> Integer -> String
-raicesMult' f x0 e tol i 
-           | ((not(raiz f x1)) && e > tol && den /= (ton 0) && i > 0) = raicesMult' f x1 err tol (i-1)
+raicesMult' :: Func -> Func -> Func -> Func -> Integer -> String -> String
+raicesMult' f x0 e tol i typErr
+           | ((not(raiz f x1)) && e > tol && den /= (ton 0) && i > 0) = (raicesMult' f x1 err tol (i-1) typErr)
            | (raiz f x1) = (show x1) ++ " es raiz"
            | (e <= tol) = (show x1) ++ " es raiz con un error " ++ (show e)
            | (den == (ton 0) ) = "Denomidador igual a 0"
            | otherwise = "El metodo no converge en las iteraciones dadas"
-           where y = reduccion(sust f ('x',x0))
+           where y = eval f ('x',x0)
                  den = reduccion (((derivada f x0) ^/ ton 2) -/ (y */ (sdaDerivada f x0)))
                  x1 = reduccion (x0 -/ ((y */ (derivada f x0)) // den))
-                 err = abs'(x1 -/ x0)
-           
- 
-{-FUNCIONES PARA PROBAR METODOS -}
+                 err = error' typErr x1 x0
 
-{-Se pueden probar las funciones de biseccion y regla falsa con esos parametros-}
+{-METODO DE RAICES MULTIPLES
+Este metodo esta completamente desarrollado por nosotros ya que en la practica del semestre 2010-1 no esta definido
+-}
+--Funcion que recibe los datos y ordena iniciar el ciclo principal
+raicesMultiples :: Func -> Func -> Func -> Func -> Func -> Integer -> String -> String
+raicesMultiples f f' f'' x0 tol n typErr = (raicesMultiples' f f' f'' x0 (reduccion ((tol) `FSum` (FConst 1))) tol n typErr)
 
-funb :: Func
-funb = tov 'x' ^/ ton 2 -/ ton 3
+raicesMultiples' :: Func -> Func -> Func -> Func -> Func -> Func -> Integer -> String -> String
+raicesMultiples' f f' f'' x0 e tol i typErr
+                 | ((not (raiz f x0)) && e > tol && i > 0) = (raicesMultiples' f f' f'' x1 err tol (i-1) typErr)
+                 | (raiz f x0) = (show x0) ++ "es raiz"
+                 | (e <= tol)  = (show x0) ++ "es raiz con un error " ++ (show e)
+                 | (otherwise) = "El metodo no converge en las iteraciones dadas"
+                 where x1 = reduccion (x0 `FRes` ((y `FMult` y') `FDiv` ((y' `FPot` (FConst 2)) `FRes` (y `FMult` y''))))
+                       y  = eval f ('x', x0)
+                       y' = eval f' ('x', x0)
+                       y'' = eval f'' ('x', x0)
+                       err = error' typErr x1 x0
 
-a1 :: Func
-a1 =  ton (-2)
+{-Se pueden probar los diferentes metodos con estos parametros-}
+fbi :: Func
+fbi = ((tov 'x') `FPot` (ton 2)) -/ (ton 3)
+
+g :: Func
+g = FRes (tov 'x') (FDiv (FRes (FPot (tov 'x') (ton 2.0)) (ton 3.0)) (FMult (ton 2.0) (tov 'x')))
+
+f' :: Func
+f' = (ton 2) */ (tov 'x')
+
+a :: Func
+a = (ton (-2))
 
 b :: Func
-b = ton (-1.5)
+b = (ton (-1.5))
 
 tol :: Func
-tol = ton (0.005)
+tol = (ton (1e-5))
 
-{- Funcion para evaluar el metodo de raices multiples -}
-frm :: Func 
+frm :: Func
 frm = (((FCos (tov 'x')) ^/ (ton 2))) -/ (((ton 2)*/ (tov 'x'))*/ (FCos (tov 'x'))) +/ ((tov 'x') ^/ (ton 2))
- 
-
-
-

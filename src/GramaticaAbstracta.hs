@@ -1,6 +1,9 @@
 module GramaticaAbstracta where
 
-{-Func representa un pequeÃ±o lenguaje para la gramatica de las funciones.
+{-Defincion de la gramatica abstracta para escribir funciones e integrales.
+-}
+
+{-Func representa un pequeño lenguaje para la gramatica de las funciones.
 -}
 data Func = FConst Double  	--Una constante
 	  | FVar Char		--Una variable
@@ -17,12 +20,7 @@ data Func = FConst Double  	--Una constante
 	  | FSec Func		--Funcion Secante
 	  | FCsc Func		--Funcion Cosecante
 	  | FCot Func		--Funcion Cotangente
-          | Func Func           --Funcion que recibe cualquier de las demas funciones
-	deriving (Eq,Ord)
-
-data Resp = RSim Func           -- Una respuesta simple, se utiliza cuando se encuentra la un valor exacto como resultado.
-          | RInt (Func,Func)    -- Respuesta como intervalo
-        deriving (Show,Eq,Ord)  
+	deriving (Eq, Ord)
 
 instance Show Func where
     show (FConst a) = (show a)
@@ -40,17 +38,3 @@ instance Show Func where
     show (FSec a) = "Sec(" ++ (show a) ++ ")"
     show (FCsc a) = "Csc(" ++ (show a) ++ ")"
     show (FCot a) = "Cot(" ++ (show a) ++ ")"
-
-{-instance Num  Func  where 
-    (FConst ( a)) + (FConst ( b)) = (FConst (a+b)) 
-    (FConst a) - (FConst b) = (FConst (a-b))
-    (FConst a) * (FConst b) = (FConst (a*b))                            
-    signum (FConst a) = FConst (signum a)
-    abs (FConst a) = abs (FConst a) 
-    fromInteger  a =  (FConst ((fromInteger a)))
- 
-instance Fractional Func where
-    (FConst a)/ (FConst b) = FConst ((a/b))
-    recip (FConst a) = FConst (recip a)
-    fromRational a = FConst (fromRational a)-} 
-   

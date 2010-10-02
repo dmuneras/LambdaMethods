@@ -24,7 +24,6 @@ sust (FSec a) s@(var, f)   = FSec (sust a s)
 sust (FCsc a) s@(var, f)   = FCsc (sust a s)
 sust (FCot a) s@(var, f)   = FCot (sust a s)
 
-	
 {-Funcion que determina si una funcion es constante          
 -}
 isCons :: Func -> Bool
@@ -37,55 +36,75 @@ sacarNum :: Func -> Double
 sacarNum (FConst a) = a
 sacarNum _          = error "No const"
 
+{-Funcion que saca el valor absoluto de una funcion
+-}
+abs' :: Func -> Func
+abs' (FConst c) = FConst (abs c)
+abs' (FVar x)   = error "Valor absoluto de variable"
+abs' (FSum a b) = FConst (abs ((sacarNum (a) + sacarNum (b))))
+abs' (FRes a b) = FConst (abs ((sacarNum (a) - sacarNum (b))))
+abs' (FMult a b)= FConst (abs ((sacarNum (a) * sacarNum (b))))
+abs' (FDiv a b) = FConst (abs ((sacarNum (a) / sacarNum (b))))
+abs' (FPot a b) = FConst (abs ((sacarNum (a) ** sacarNum (b))))
+abs' (FExp a)   = FConst (abs (exp (sacarNum (a))))
+abs' (FLn a)    = FConst (abs (log (sacarNum (a))))
+abs' (FSen a)   = FConst (abs (sin (sacarNum (a))))
+abs' (FCos a)   = FConst (abs (cos (sacarNum (a))))
+abs' (FTan a)   = FConst (abs (tan (sacarNum (a))))
+abs' (FSec a)   = FConst (abs (1/sin (sacarNum (a))))
+abs' (FCsc a)   = FConst (abs (1/cos (sacarNum (a))))
+abs' (FCot a)   = FConst (abs (1/tan (sacarNum (a))))
+
 {-Funcion que reduce los terminos de una funcion y de sus subterminos
 -}          
-reduccion' :: Func -> Func
-reduccion' (FConst c) = FConst c
-reduccion' (FVar x)   = FVar x
-reduccion' (FSum a b)
+eval :: Func -> Func
+eval (FConst c) = FConst c
+eval (FVar x)   = FVar x
+eval (FSum a b)
 		| (isCons a) && (isCons b) = FConst (sacarNum (a)+ sacarNum (b))
-		| otherwise                =  FSum (reduccion' a) (reduccion' b)
-reduccion' (FRes a b)
+		| otherwise                =  FSum (eval a) (eval b)
+eval (FRes a b)
 		| (isCons a) && (isCons b) = FConst (sacarNum (a)- sacarNum (b))
-		| otherwise                =  FRes (reduccion' a) (reduccion' b)
-reduccion' (FMult a b)
+		| otherwise                =  FRes (eval a) (eval b)
+eval (FMult a b)
 		| (isCons a) && (isCons b) = FConst (sacarNum (a)* sacarNum (b))
-		| otherwise                =  FMult (reduccion' a) (reduccion' b)
-reduccion' (FDiv a b)
+		| otherwise                =  FMult (eval a) (eval b)
+eval (FDiv a b)
 		| (isCons a) && (isCons b) = FConst (sacarNum (a)/ sacarNum (b))
-		| otherwise                = FDiv (reduccion' a) (reduccion' b)
-reduccion' (FPot a b)
+		| otherwise                = FDiv (eval a) (eval b)
+eval (FPot a b)
 		| (isCons a) && (isCons b) = FConst ((sacarNum (a)**(sacarNum (b))))
-		| otherwise                = FPot (reduccion' a) (reduccion' b)
-reduccion' (FExp a)
-		| isCons a  = FConst ((2.7182)**(sacarNum (a)))
-		| otherwise = FExp (reduccion' a)
-reduccion' (FLn a)
+		| otherwise                = FPot (eval a) (eval b)
+eval (FExp a)
+		| isCons a  = FConst (exp (sacarNum (a)))
+		| otherwise = FExp (eval a)
+eval (FLn a)
 		| isCons a  = FConst (log (sacarNum (a)))
-		| otherwise = FLn (reduccion' a)
-reduccion' (FSen a)
+		| otherwise = FLn (eval a)
+eval (FSen a)
 		| isCons a  = FConst (sin (sacarNum (a)))
-		| otherwise = FSen (reduccion' a)
-reduccion' (FCos a)
+		| otherwise = FSen (eval a)
+eval (FCos a)
 		| isCons a  = FConst (cos (sacarNum (a)))
-		| otherwise = FCos (reduccion' a)
-reduccion' (FTan a)
+		| otherwise = FCos (eval a)
+eval (FTan a)
 		| isCons a  = FConst (tan (sacarNum (a)))
-		| otherwise = FTan (reduccion' a)
-reduccion' (FCot a)
+		| otherwise = FTan (eval a)
+eval (FCot a)
 		| isCons a  = FConst (1/tan(sacarNum (a)))
-		| otherwise = FCot (reduccion' a)
-reduccion' (FSec a)
+		| otherwise = FCot (eval a)
+eval (FSec a)
 		| isCons a  = FConst (1/cos (sacarNum (a)))
-		| otherwise = FSec (reduccion' a)
-reduccion' (FCsc a)
+		| otherwise = FSec (eval a)
+eval (FCsc a)
 		| isCons a  = FConst (1/sin (sacarNum (a)))
-		| otherwise = FCsc (reduccion' a)
+		| otherwise = FCsc (eval a)
 
 {-Funcion que determina hasta que punto se reduce
 -}
 reduccion :: Func -> Func
-reduccion t = let t' = reduccion' t
+reduccion t = let t' = eval t
               in if t == t'
                  then t'
                  else reduccion t'
+
