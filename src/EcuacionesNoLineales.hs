@@ -4,7 +4,13 @@ import GramaticaAbstracta
 import GramaticaConcreta
 import Semantica
 import UU.Parsing
-       | reduccion ((sust f ('x',a)) */ (sust f ('x',b))) < (ton 0) = True
+
+{-FUNCIONES AUXILIARES
+Estas funciones son utilizadas por los difetentes metodos lo modulo, son adaptadas de la practica del semestre 2010-1 realizada por Santiago Rodriguez y Carolina Campillo
+-}--Funcion que determina si hay cambio de signo en la funcion evaluada en dos puntos
+signo :: Func -> Func -> Func -> Bool
+signo f a b
+          | reduccion ((sust f ('x',a)) */ (sust f ('x',b))) < (ton 0) = True
           | otherwise = False                                                             
 
 -- Funcion que determina si se esta parado en una raiz
@@ -196,8 +202,9 @@ raicesMultiples' f f' f'' x0 e tol i typErr
                        err = error' typErr x1 x0
 
 {-Se pueden probar los diferentes metodos con estos parametros-}
-fbi :: Func
-fbi = ((tov 'x') `FPot` (ton 2)) -/ (ton 3)
+--(X^2)-3
+f :: Func
+f = ((tov 'x') `FPot` (ton 2)) -/ (ton 3)
 
 g :: Func
 g = FRes (tov 'x') (FDiv (FRes (FPot (tov 'x') (ton 2.0)) (ton 3.0)) (FMult (ton 2.0) (tov 'x')))
@@ -214,5 +221,14 @@ b = (ton (-1.5))
 tol :: Func
 tol = (ton (1e-5))
 
-frm :: Func
-frm = (((FCos (tov 'x')) ^/ (ton 2))) -/ (((ton 2)*/ (tov 'x'))*/ (FCos (tov 'x'))) +/ ((tov 'x') ^/ (ton 2))
+{-Se puede probar el metodo de raices multiples con estas funciones-}
+--COS^2(x)-2xCOS(x)+x^2
+fr :: Func
+fr = (((FCos (tov 'x')) ^/ (ton 2))) -/ (((ton 2)*/ (tov 'x'))*/ (FCos (tov 'x'))) +/ ((tov 'x') ^/ (ton 2))
+
+fr' :: Func
+fr' = FSum (FRes (FPot (FCos (FVar 'x')) (FConst 2.0)) (FMult (FMult (FConst 2.0) (FVar 'x')) (FCos (FVar 'x')))) (FPot (FVar 'x') (FConst 2.0))
+
+--EXP(-2x)-2xEXP(-x)+x^2
+fn :: Func
+fn = FSum (FRes (FExp (FMult (FConst (-2.0)) (FVar 'x'))) (FMult (FMult (FConst 2.0) (FVar 'x')) (FExp (FMult (FConst (-1.0)) (FVar 'x'))))) (FPot (FVar 'x') (FConst 2.0))
