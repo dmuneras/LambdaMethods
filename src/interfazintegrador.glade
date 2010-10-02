@@ -29,7 +29,7 @@
       <property name="visible">True</property>
 
       <child>
-	<widget class="GtkEntry" id="input">
+	<widget class="GtkEntry" id="entry1">
 	  <property name="width_request">368</property>
 	  <property name="height_request">32</property>
 	  <property name="visible">True</property>

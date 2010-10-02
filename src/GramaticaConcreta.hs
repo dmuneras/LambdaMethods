@@ -66,11 +66,7 @@ pOperMult =  FMult <$ pKey "*"
 pOperSum :: Parser Token (Func -> Func -> Func)
 pOperSum =  FSum <$ pKey "+"
         <|> FRes <$ pKey "-"
-
-{-Parser que reconoce un termino de respuesta
--}
---pResp :: Parser Token Fun
---pResp     
+    
 {-Parser que reconoce un termino
 -}
 pTerm :: Parser Token Func

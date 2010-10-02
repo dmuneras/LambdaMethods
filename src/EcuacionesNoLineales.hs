@@ -26,7 +26,7 @@ derivada f x = reduccion ((((sust f ('x',( x +/ h)))) -/ (reduccion (sust f ('x'
 --Funcion que retorna la segunda derivada de una funcion, evaluada en un punto.
 sdaDerivada :: Func -> Func -> Func
 sdaDerivada f  n = reduccion(((reduccion (sust f ('x', n +/ h))) -/ (ton 2 */ (reduccion (sust f ('x',n)))) +/ (reduccion (sust f ('x',n -/ h)))) // (h^/ (ton 2)))
-                 where h = ton 0.0001
+                 where h = ton 0.000001
 
 {-METODO DE BUSQUEDAS INCREMENTALES
 NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1, se hicieron los cambios necesarios para usarlo con nuestra gramatica de funciones
@@ -128,8 +128,8 @@ raicesMult' f x0 e tol i
 
 {-Se pueden probar las funciones de biseccion y regla falsa con esos parametros-}
 
-fun :: Func
-fun = tov 'x' ^/ ton 2 -/ ton 3
+funb :: Func
+funb = tov 'x' ^/ ton 2 -/ ton 3
 
 a1 :: Func
 a1 =  ton (-2)
@@ -141,10 +141,9 @@ tol :: Func
 tol = ton (0.005)
 
 {- Funcion para evaluar el metodo de raices multiples -}
-f :: Func 
-f = (((FCos (tov 'x')) ^/ (ton 2))) -/ (((ton 2)*/ (tov 'x'))*/ (FCos (tov 'x'))) +/ ((tov 'x') ^/ (ton 2))
-
-
+frm :: Func 
+frm = (((FCos (tov 'x')) ^/ (ton 2))) -/ (((ton 2)*/ (tov 'x'))*/ (FCos (tov 'x'))) +/ ((tov 'x') ^/ (ton 2))
+ 
 
 
 
