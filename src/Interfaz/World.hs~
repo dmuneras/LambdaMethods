@@ -1,0 +1,22 @@
+-- A simple program to demonstrate Gtk2Hs.
+module Main (Main.main) where
+
+import Graphics.UI.Gtk
+
+main :: IO ()
+main = do
+  initGUI
+  -- Create a new window
+  window <- windowNew
+  onDestroy window mainQuit
+  set window [ containerBorderWidth := 10, windowTitle := "Hello World" ]
+  button <- buttonNew
+  label <- labelNew Nothing
+  set button [ buttonLabel := "Hello World" ]
+  onClicked button (putStrLn "Hello World")
+  onClicked button $ do
+    putStrLn "A \"clicked\"-handler to say \"destroy\""
+    widgetDestroy window
+  set window [ containerChild := button ]
+  widgetShowAll window
+  mainGUI
