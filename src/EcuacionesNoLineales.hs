@@ -232,3 +232,8 @@ fr' = FSum (FRes (FPot (FCos (FVar 'x')) (FConst 2.0)) (FMult (FMult (FConst 2.0
 --EXP(-2x)-2xEXP(-x)+x^2
 fn :: Func
 fn = FSum (FRes (FExp (FMult (FConst (-2.0)) (FVar 'x'))) (FMult (FMult (FConst 2.0) (FVar 'x')) (FExp (FMult (FConst (-1.0)) (FVar 'x'))))) (FPot (FVar 'x') (FConst 2.0))
+
+fcos = (cos_(tov 'x') -/ (ton 2))
+
+ff :: Func
+ff = ((tov 'x') ^/ (ton 2)) -/ (ton 2)

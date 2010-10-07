@@ -12,23 +12,23 @@ import Prelude
 import Control.Exception
 import Foreign
 
-process ::(EntryClass e) => String -> e -> String -> String -> String -> String -> String -> IO ()
-process s e a1 b tol i p   
-              | (p == "ver ecuacion parser") = do a <- parseIO pFunc (funScanTxt s)
+process ::(EntryClass e) => String -> String -> String -> String -> String -> String -> e -> IO ()
+process f a b tol i p e  
+              | (p == "ver ecuacion parser") = do a <- parseIO pFunc (funScanTxt f)
                                                   let st = show a
                                                   set e [ entryText := show st ]
-              | (p == "Busqueda incremental") = do f <- parseIO pFunc (funScanTxt s)
+              | (p == "Busqueda incremental") = do f <- parseIO pFunc (funScanTxt f)
                                                    b <- parseIO pFunc (funScanTxt b)
-                                                   a1 <-parseIO pFunc (funScanTxt a1)
-                                                   i <- parseIO pFunc (funScanTxt i)
-                                                   let st = busqdIncremental f a1 b (floatRadix(sacarNum(i)))
+                                                   a <-parseIO pFunc (funScanTxt a)
+                                                   putStrLn ((show a)++ " incrementando " ++ (show b) ++ " iter " ++ (show i))
+                                                   let st = busqdIncremental f a b (read i)
                                                    set e [entryText := show st]
-              | (p == "Biseccion") = do f <- parseIO pFunc (funScanTxt s)
+              | (p == "Biseccion") = do f <- parseIO pFunc (funScanTxt f)
                                         b <- parseIO pFunc (funScanTxt b)
-                                        a1 <-parseIO pFunc (funScanTxt a1)
-                                        i <- parseIO pFunc (funScanTxt i)
+                                        a <-parseIO pFunc (funScanTxt a)
                                         tol <- parseIO pFunc (funScanTxt tol)
-                                        let st = biseccion f a1 b tol  (floatRadix(sacarNum(i))) "abs"
+                                        putStrLn ("Intervalo "++ (show a) ++ "," ++ (show b) ++ " " ++ (show tol) ++ " "++ (show i))
+                                        let st = biseccion f a b tol (read i) "abs"
                                         set e [entryText := st]
               | otherwise = set e [entryText := "todavia no"]
 
@@ -101,46 +101,50 @@ main = do
   boxPackStart biseccion ab PackNatural 0
   bb <- entryNew 
   boxPackStart biseccion bb PackNatural 0
-  ib <- entryNew
-  boxPackStart biseccion ib PackNatural 0
   tol <- entryNew
   boxPackStart biseccion tol PackNatural 0
+  ib <- entryNew
+  boxPackStart biseccion ib PackNatural 0
   
   {-FUNCIONES PARA CONTROLAR LOS EVENTOS-}
 
   toggleButtonSetActive radio1 True
   onToggled radio1 (setRadioState radio1)
   onToggled radio2 (setRadioState radio2)
+  onToggled radio3 (setRadioState radio3)
   
-  onEntryActivate entrada $ do
-        texto <- get entrada entryText
-        if (unsafePerformIO(toggleButtonGetActive radio2)) 
-          then do 
-                 a <- get a entryText 
-                 b <- get b entryText
-                 i <- get i entryText
-                 process texto salida a b i i (control(controlRadio [radio1,radio2, radio3]))
-          else do
-                 ab <- get a entryText
-                 bb <- get b entryText
-                 ib <- get i entryText
-                 tol <- get tol entryText
-                 process texto salida ab bb tol ib (control(controlRadio [radio1,radio2, radio3]))
+  -- onEntryActivate entrada $ do
+  --       texto <- get entrada entryText
+  --       if (unsafePerformIO(toggleButtonGetActive radio2)) 
+  --         then do 
+  --                a <- get a entryText 
+  --                b <- get b entryText
+  --                i <- get i entryText
+  --                process texto salida a b i i (control(controlRadio [radio1,radio2, radio3]))
+  --         else do
+  --                ab <- get a entryText
+  --                bb <- get b entryText
+  --                ib <- get i entryText
+  --                tol <- get tol entryText
+  --                process texto salida ab bb tol ib (control(controlRadio [radio1,radio2, radio3]))
 
   onClicked eval $ do
-        texto <- get entrada entryText
-        if (unsafePerformIO(toggleButtonGetActive radio2)) 
+        f <- get entrada entryText
+        if (unsafePerformIO(toggleButtonGetActive radio3)) 
           then do 
-                 a <- get a entryText 
+                 ab <- get ab entryText 
+                 bb <- get bb entryText
+                 tol <- get tol entryText
+                 ib <- get ib entryText
+                 process f ab bb tol ib (control(controlRadio [radio1,radio2, radio3])) salida
+          else do
+                 a <- get a entryText
                  b <- get b entryText
                  i <- get i entryText
-                 process texto salida a b i i (control(controlRadio [radio1,radio2, radio3]))
-          else do
-                 ab <- get a entryText
-                 bb <- get b entryText
-                 ib <- get i entryText
-                 tol <- get tol entryText
-                 process texto salida ab bb tol ib (control(controlRadio [radio1,radio2, radio3]))
+                 process f a b i i (control(controlRadio [radio1,radio2, radio3])) salida
+  
+  
+  {-Captura evento del boton graficar-}
   onClicked graficar $ do
         s <- get entrada entryText
         f <- parseIO pFunc (funScanTxt s)
