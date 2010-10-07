@@ -49,7 +49,7 @@ NOTA: Esta adaptado del metodo implementado por Santiago Rodriguez y Carolina Ca
 -}
 --Funcion que realiza la busqueda incremental de un intervalo que contenga almenos una raiz
 busqdIncremental :: Func -> Func -> Func -> Integer -> [(Func,Func)]
-busqdIncremental f a d 0 = error "El metodo no converge en las iteraciones dadas"
+busqdIncremental f a d 0 = []
 busqdIncremental f a d i
     | (raiz f a) = [((reduccion a),(reduccion a))]
     | (signo f a (a +/ d)) = [((reduccion a),(reduccion (a +/ d)))]

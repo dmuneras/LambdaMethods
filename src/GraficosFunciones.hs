@@ -14,21 +14,23 @@ import EcuacionesNoLineales
 
 {- Función que grafica una funcion en un plano xy 
    FUNCIONAMIENTO: La función de graficacion Plot2D es una función que recibe una lista de valores para sustituir en
-                   el segundo parametro, que consiste en una función de tipo a -> a, en nuestro casi es una función 
+                   el segundo parametro, que consiste en una función de tipo a -> a, en nuestro caso es una función 
                    Double -> Double.
 -}
 
-graficaXY :: Plot2D.T Double Double
-graficaXY =
-   Plot2D.function Graph2D.lines (linearScale 500 (-5,5)) (\x -> funcGraf f  x)
+graficaXY :: Func -> IO () 
+graficaXY f = do 
+                Plot.plot (X11.cons) (Plot2D.function Graph2D.lines (linearScale 500 (-5,5)) (\x -> funcGraf f  x))
+                return ()
+                       
    
 
 {- Función de ayuda para cumplir con el tipo de parametro de la función a gráficar. -}
 funcGraf :: Func -> Double -> Double
 funcGraf f x = sacarNum (reduccion (sust f ('x', (FConst x))))
 
-main :: IO ()
-main =
-   do 
-      Plot.plot (X11.cons) graficaXY
-      return ()
+--main :: IO ()
+--main =
+--   do 
+--      Plot.plot (X11.cons) graficaXY
+--      return ()
