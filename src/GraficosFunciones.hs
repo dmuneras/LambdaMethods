@@ -20,7 +20,7 @@ import EcuacionesNoLineales
 
 graficaXY :: Func -> IO () 
 graficaXY f = do 
-                Plot.plot (X11.cons) (Plot2D.function Graph2D.lines (linearScale 500 (-5,5)) (\x -> funcGraf f  x))
+                Plot.plot (X11.cons) (Plot2D.function Graph2D.lines (linearScale 500 (-10,10)) (\x -> funcGraf f  x))
                 return ()
                        
    
@@ -28,9 +28,3 @@ graficaXY f = do
 {- Función de ayuda para cumplir con el tipo de parametro de la función a gráficar. -}
 funcGraf :: Func -> Double -> Double
 funcGraf f x = sacarNum (reduccion (sust f ('x', (FConst x))))
-
---main :: IO ()
---main =
---   do 
---      Plot.plot (X11.cons) graficaXY
---      return ()
