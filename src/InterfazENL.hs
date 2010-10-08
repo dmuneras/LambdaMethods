@@ -171,7 +171,7 @@ ecuacionesNoLineales = do table <- tableNew 6 1 False
                           ap <- entryNew
                           boxPackStart bap ap PackNatural 0
   
-                          labelbp <- labelNew (Just "ingrese derivada ")
+                          labelbp <- labelNew (Just "ingrese función g ")
                           miscSetAlignment labelbp 0 0
                           boxPackStart bbp labelbp PackNatural 0
                           bp <- entryNew 

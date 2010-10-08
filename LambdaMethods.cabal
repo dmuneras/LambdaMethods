@@ -12,8 +12,8 @@ stability:  Experimental
 build-type: Simple
 extra-source-files: Readme
 executable:	LambdaIntegrator
-build-depends:	base, uulib, glade, gtk
-main-is:        LambdaIntegrator.hs
+build-depends:	base, uulib, gtk
+main-is:        InterfazPrincipal.hs
 hs-source-dirs:	src
 other-modules:  GramaticaAbstracta, GramaticaConcreta, Semantica, EcuacionesNoLineales
 
