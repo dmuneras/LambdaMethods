@@ -1,0 +1,2 @@
+module SistemasEcuaciones where
+importa Data.Array
