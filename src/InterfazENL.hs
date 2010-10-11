@@ -203,7 +203,7 @@ ecuacionesNoLineales = do table <- tableNew 6 1 False
                                 s <- get entrada entryText
                                 f <- parseIO pFunc (funScanTxt s)
                                 graficaXY f
- 
+                           {-CAPTURA DE EVENTOS DEL BOTON EVALUACION DE FUNCIONES-}
                           onClicked eval $ do
                                 f <- get entrada entryText
                                 if (unsafePerformIO(toggleButtonGetActive radio5))

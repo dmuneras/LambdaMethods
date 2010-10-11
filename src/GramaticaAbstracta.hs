@@ -1,4 +1,5 @@
 module GramaticaAbstracta where
+import Data.Array
 
 {-Defincion de la gramatica abstracta para escribir funciones e integrales.
 -}
@@ -21,6 +22,9 @@ data Func = FConst Double  	--Una constante
 	  | FCsc Func		--Funcion Cosecante
 	  | FCot Func		--Funcion Cotangente
 	deriving (Eq, Ord)
+
+{-Definicion del tipo de dato matriz-}
+type Matriz = Array (Integer, Integer) Double
 
 instance Show Func where
     show (FConst a) = (show a)
