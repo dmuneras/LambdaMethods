@@ -8,7 +8,7 @@ leerMatriz :: Integer -> [Double] -> Matriz
 leerMatriz n elem = listArray ((1,1),(n,n)) elem
 
 leerMatrizAu :: Integer -> [Double] -> Matriz
-leerMatrizAu n elem = listArray ((1,1),(n+1,n)) elem
+leerMatrizAu n elem = listArray ((1,1),(n,n+1)) elem
 
 
 {-FUNCIONES AUXILIARES PARA PIVOTEOS -}
@@ -49,6 +49,8 @@ cambioColumnas :: (Ix a, Ix b, Enum b) =>  Array (b,a) c -> a -> a -> Array (b,a
 cambioColumnas a j j'  = a // [assoc | i <- [iLo..iHi], assoc <- [((i,j), a!(i,j')) , ((i,j'), a!(i,j))] ]
                    where ((iLo,jLo),(iHi,jHi)) = bounds a
 
+
+
 {-FUNCIONES AYUDA PARA GAUSIANA SIMPLE-}
 
 {-Funcion que retorna una columna de la c matriz a, necesita que ingresen la matriz, la columna deseada y el numero de filas total de la fila-}
@@ -56,8 +58,10 @@ darColumna :: Matriz -> Integer -> Matriz
 darColumna m c = listArray ((1,c),((fst(last(indices m)) ),c))(map (\y -> snd y)(filter (\x -> (snd (fst x)) == c ) (assocs m)))
 
 {-Funciones que me dan la fila completa o la fila a operar dependiendo de la etapa-}
+darFila :: Matriz -> Integer -> [((Integer, Integer),Double)]
 darFila m f  =  filter (\x -> (fst(fst(x))) == f ) (assocs m)
-numsFila m f = map (\x -> snd x)(darFila m f)
+
+--numsFila m f = map (\x -> snd x)(darFila m f)
 
 operFila :: Matriz -> Integer -> [((Integer,Integer), Double)]
 operFila m f = filter (\x -> snd(fst(x)) >= (f-1)) (darFila m f)
@@ -74,26 +78,6 @@ numDiagonal m k = head(filter(\x -> fst(fst(x)) == k) (f  m))
 
 multFila :: Matriz -> Integer -> Integer -> Double
 multFila m k f =  snd(head(filter (\x -> fst(fst x) == f) (multsEtapa m k)))
-
-
-{- ELIMINACION GAUSIANA-}
-
-etapak :: Matriz -> Integer -> Integer -> Matriz
-etapak a n 1 = actualizar a (indOper a (etapaj (operm a 1) (n-1))1)
-etapak a n k = actualizar (etapak a n (k-1)) (indOper (etapak a n (k-1)) (etapaj (operm (etapak a n (k-1)) k) (n-k) )k )
-
-{-Funcion que se encarga de las transformaciones de fila en cada etapa k, utiliza la funcion etapaj' que a su vez utiliza la funcion etapaj''-}
-etapaj :: Matriz -> Integer -> Matriz 
-etapaj a j = listArray ((1,1),(j,(j+1))) (map (\x -> snd x) (etapaj' a j))
-
-etapaj' :: Matriz -> Integer -> [((Integer,Integer),Double)]
-etapaj' a 1  = etapaj'' a 1 
-etapaj' a j = (etapaj' a (j-1)) ++ (etapaj'' a j)
-
-etapaj'' :: Matriz -> Integer -> [((Integer,Integer),Double)]
-etapaj'' a j = (map (\x -> (((fst x), ((snd x) - (f x * mk))))) (darFila a (j+1)))
-    where mk = multFila a 1 (j+1)
-          f x = ( snd (head (filter (\y -> snd (fst(y)) == snd (fst x)) (operFila a 1))))
 
 {-Funcion que devuelve la submatriz que sera procesada dependiendo de la etapa k en la que va el proceso-}
 operm :: Matriz -> Integer -> Matriz
@@ -115,7 +99,42 @@ act' :: ((Integer,Integer),Double) -> [((Integer,Integer),Double)] -> ((Integer,
 act' b e 
      | (filter (\x -> (fst x) == (fst b))e) /= [] = head(filter (\x -> (fst x) == (fst b))e)
      | otherwise = b
- 
+
+
+{- ELIMINACION GAUSIANA-}
+
+eliminacionGausiana :: Matriz -> Integer -> Matriz
+eliminacionGausiana a n = etapak a n (n-1)
+
+etapak :: Matriz -> Integer -> Integer -> Matriz
+etapak a n 1 = actualizar a (indOper a (etapaj (operm a 1) (n-1))1)
+etapak a n k = actualizar (etapak a n (k-1)) (indOper (etapak a n (k-1)) (etapaj (operm (etapak a n (k-1)) k) (n-k) )k )
+
+{-Funcion que se encarga de las transformaciones de fila en cada etapa k, utiliza la funcion etapaj' que a su vez utiliza la funcion etapaj''-}
+etapaj :: Matriz -> Integer -> Matriz 
+etapaj a j = listArray ((1,1),(j,(j+1))) (map (\x -> snd x) (etapaj' a j))
+
+etapaj' :: Matriz -> Integer -> [((Integer,Integer),Double)]
+etapaj' a 1  = etapaj'' a 1 
+etapaj' a j = (etapaj' a (j-1)) ++ (etapaj'' a j)
+
+etapaj'' :: Matriz -> Integer -> [((Integer,Integer),Double)]
+etapaj'' a j = (map (\x -> (((fst x), ((snd x) - (f x * mk))))) (darFila a (j+1)))
+    where mk = multFila a 1 (j+1)
+          f x = ( snd (head (filter (\y -> snd (fst(y)) == snd (fst x)) (operFila a 1))))
+
+
+{-SUSTITUCIONES-}
+
+--xn :: Matriz -> Integer -> [((Integer,Integer),Double)] -> Integer -> Double 
+xn a n b k = (i ,((head(map (\x -> snd x )(filter (\x -> (fst(fst(x))) == k) b))) / akk)) 
+                  where i = fst(numDiagonal (eliminacionGausiana a n) k)
+                        akk = snd(numDiagonal (eliminacionGausiana a n) k)
+suma :: [Double] -> Double
+suma [] = 0
+suma [a] = a
+suma (x:xs) = suma [x] + suma xs
+
 
 {-PARA PRUEBAS-}
 m1 = leerMatriz 3 [2,1,4,3,2,3,6,1,4]
@@ -123,3 +142,9 @@ m2 = leerMatriz 4 [20,1,3,2,4,60,-3,-7,1,2,50,7,-2,-7,4,18]
 m3 = leerMatriz 3 [10,2,5,3,12,2,-4,-5,15]
 m21 = etapak m2 4 1
 m22 = etapak m2 4 2
+b = [((1,1),1.0),((2,1),2.0),((3,1),3.0),((4,1),4.0)]
+b3 = [((1,1),1.0),((2,1),2.0),((3,1),3.0)]
+m2au =  leerMatrizAu 4 [20,1,3,2,1,  4,60,-3,-7,1,  1,2,50,7,1, -2,-7,4,18,1]
+
+
+
