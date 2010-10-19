@@ -97,14 +97,14 @@ act' b e
      | (filter (\x -> (fst x) == (fst b))e) /= [] = head(filter (\x -> (fst x) == (fst b))e)
      | otherwise = b
 
-etapak  :: Matriz -> Integer -> [((Integer,Integer),Double)]
-etapak a  1 = actualizar a (etapaj a 1)
---etapak a  j = actualizar (etapak (matrizEtapaj m2 (j-1)) (j-1)) (etapaj a j)
+--etapak  :: Matriz -> Integer -> Integer -> Matriz
+etapak a 1 n  = etapaj (operMatriz' a 1) (n-1)
+etapak a k n = etapaj (operMatriz' a 2) (n-k) 
 
---opermatriz :: Matriz -> [((Integer,Integer),Double)] -> Matriz
---operMatriz a ne  = a // [assoc | i <- [(iLo..iHi], assoc <- [((i,j), a!(i,j)) , filter(\x -> ))] ]
---                    where ((iLo,jLo),(iHi,jHi)) = bounds a
-                          
+operMatriz' :: Matriz -> Integer -> Matriz
+operMatriz' a k = listArray (((k),(k)),(n,n))(map (\x -> snd x)(filter (\x -> (snd(fst(x)) >= k && (fst(fst(x))) >= k)) (assocs a)))
+                  where n = snd(snd(bounds a))
+
 
 matrizEtapaj :: Matriz -> Integer -> Matriz
 matrizEtapaj a j = leerMatriz  (snd(snd(bounds a))) (map (\x -> snd x)(actualizar a (etapaj a j)) )
@@ -118,4 +118,4 @@ m1 = leerMatriz 3 [2,1,4,3,2,3,6,1,4]
 m2 = leerMatriz 4 [20,1,3,2,4,60,-3,-7,1,2,50,7,-2,-7,4,18]
 m3 = leerMatriz 3 [10,2,5,3,12,2,-4,-5,15]
 prueba = leerMatriz 3 [59.8,-3.6,-7.4,1.95,49.85,6.9,-6.9,4.3,18.2]
---etapa1m2 = matrizEtapa (etapak m2 1 4) 2
+m21 = matrizEtapaj m2 3
