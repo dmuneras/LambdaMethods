@@ -77,45 +77,46 @@ numDiagonal m k = head(filter(\x -> fst(fst(x)) == k) (f  m))
 
 {- ELIMINACION GAUSIANA-}
 
+etapak :: Matriz -> Integer -> Integer -> Matriz
+etapak a n 1 = actualizar a (indOper a (etapaj (operm a 1) (n-1))1)
+etapak a n k = actualizar (etapak a n (k-1)) (indOper (etapak a n (k-1)) (etapaj (operm (etapak a n (k-1)) k) (n-k) )k )
 
 
-
-etapaj' :: Matriz -> Integer -> [((Integer,Integer),Double)]
-etapaj' a j = (map (\x -> (((fst x), ((snd x) - (f x * mk))))) (darFila a (j+1)))
+etapaj'' :: Matriz -> Integer -> [((Integer,Integer),Double)]
+etapaj'' a j = (map (\x -> (((fst x), ((snd x) - (f x * mk))))) (darFila a (j+1)))
     where mk = multFila a 1 (j+1)
           f x = ( snd (head (filter (\y -> snd (fst(y)) == snd (fst x)) (operFila a 1))))
 
-etapaj :: Matriz -> Integer -> [((Integer,Integer),Double)]
-etapaj a 1  = etapaj' a 1 
-etapaj a j = (etapaj a (j-1)) ++ (etapaj' a j)
+etapaj' :: Matriz -> Integer -> [((Integer,Integer),Double)]
+etapaj' a 1  = etapaj'' a 1 
+etapaj' a j = (etapaj' a (j-1)) ++ (etapaj'' a j)
 
---actualizar :: Matriz -> [((Integer,Integer),Double)] -> [((Integer,Integer),Double)]
-actualizar a e = map (\x -> (act' x e) ) (assocs a)
+etapaj :: Matriz -> Integer -> Matriz 
+etapaj a j = listArray ((1,1),((j+1),(j))) (map (\x -> snd x) (etapaj' a j))
+
+
+operm :: Matriz -> Integer -> Matriz
+operm a 1 =  a
+operm a k = leerMatriz  (snd(snd(bounds a))-1) (map (\x -> snd x)(filter (\x -> (snd(fst(x)) >= k && (fst(fst(x))) >= k)) (assocs a)))
+
+indOper :: Matriz -> Matriz -> Integer -> Matriz
+indOper a om k = listArray (((k+1),k), (n,n)) (elems om)
+                 where n = snd(snd(bounds a))
+
+
+actualizar :: Matriz -> Matriz -> Matriz
+actualizar a e = leerMatriz n (map (\x -> snd x)(map (\x -> (act' x (assocs e)) ) (assocs a)))
+                  where n = snd(snd(bounds a))
 
 act' :: ((Integer,Integer),Double) -> [((Integer,Integer),Double)] -> ((Integer,Integer),Double) 
 act' b e 
      | (filter (\x -> (fst x) == (fst b))e) /= [] = head(filter (\x -> (fst x) == (fst b))e)
      | otherwise = b
-
---etapak  :: Matriz -> Integer -> Integer -> Matriz
-etapak a 1 n  = etapaj (operMatriz' a 1) (n-1)
-etapak a k n = etapaj (operMatriz' a 2) (n-k) 
-
-operMatriz' :: Matriz -> Integer -> Matriz
-operMatriz' a k = listArray (((k),(k)),(n,n))(map (\x -> snd x)(filter (\x -> (snd(fst(x)) >= k && (fst(fst(x))) >= k)) (assocs a)))
-                  where n = snd(snd(bounds a))
-
-
-matrizEtapaj :: Matriz -> Integer -> Matriz
-matrizEtapaj a j = leerMatriz  (snd(snd(bounds a))) (map (\x -> snd x)(actualizar a (etapaj a j)) )
-
-
---gausianaSimple :: Matriz -> Integer -> Matriz
---gausianaSimple a n =  
+ 
 
 {-PARA PRUEBAS-}
 m1 = leerMatriz 3 [2,1,4,3,2,3,6,1,4]
 m2 = leerMatriz 4 [20,1,3,2,4,60,-3,-7,1,2,50,7,-2,-7,4,18]
 m3 = leerMatriz 3 [10,2,5,3,12,2,-4,-5,15]
 prueba = leerMatriz 3 [59.8,-3.6,-7.4,1.95,49.85,6.9,-6.9,4.3,18.2]
-m21 = matrizEtapaj m2 3
+--m21 = matrizEtapaj m2 3
