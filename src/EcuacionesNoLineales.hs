@@ -237,3 +237,6 @@ fcos = (cos_(tov 'x') -/ (ton 2))
 
 ff :: Func
 ff = ((tov 'x') ^/ (ton 2)) -/ (ton 2)
+
+aleja :: Func
+aleja = ((tov 'x' */ (sec_ (tov 'x'))^/ ton(2) ))
