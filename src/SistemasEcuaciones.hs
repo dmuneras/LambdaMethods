@@ -62,18 +62,19 @@ numsFila m f = map (\x -> snd x)(darFila m f)
 operFila :: Matriz -> Integer -> [((Integer,Integer), Double)]
 operFila m f = filter (\x -> snd(fst(x)) >= (f-1)) (darFila m f)
 
-{- FUNCIONES PARA HALLAR LOS MULTIPLICADORES DE UNA MATRIZ -}
+{- FUNCIONES PARA HALLAR Y VERIFICAR LOS MULTIPLICADORES DE UNA MATRIZ -}
 
 multsEtapa :: Matriz -> Integer -> [((Integer,Integer),Double)]
 multsEtapa m k = filter (\x -> fst(fst x) > fst(fst (numDiagonal m k))) (f  m k) 
                 where f m k = map (\x -> (fst x,((snd x)/(snd (numDiagonal m k))))) (tail(assocs(darColumna m k)))
 
-multFila :: Matriz -> Integer -> Integer -> Double
-multFila m k f =  snd(head(filter (\x -> fst(fst x) == f) (multsEtapa m k)))
-
 numDiagonal :: Matriz -> Integer -> ((Integer,Integer), Double)
 numDiagonal m k = head(filter(\x -> fst(fst(x)) == k) (f  m))
                   where f m =  filter (\x -> (fst(fst(x)))== (snd(fst(x)))) (assocs m)
+
+multFila :: Matriz -> Integer -> Integer -> Double
+multFila m k f =  snd(head(filter (\x -> fst(fst x) == f) (multsEtapa m k)))
+
 
 {- ELIMINACION GAUSIANA-}
 
@@ -81,33 +82,35 @@ etapak :: Matriz -> Integer -> Integer -> Matriz
 etapak a n 1 = actualizar a (indOper a (etapaj (operm a 1) (n-1))1)
 etapak a n k = actualizar (etapak a n (k-1)) (indOper (etapak a n (k-1)) (etapaj (operm (etapak a n (k-1)) k) (n-k) )k )
 
+{-Funcion que se encarga de las transformaciones de fila en cada etapa k, utiliza la funcion etapaj' que a su vez utiliza la funcion etapaj''-}
+etapaj :: Matriz -> Integer -> Matriz 
+etapaj a j = listArray ((1,1),(j,(j+1))) (map (\x -> snd x) (etapaj' a j))
+
+etapaj' :: Matriz -> Integer -> [((Integer,Integer),Double)]
+etapaj' a 1  = etapaj'' a 1 
+etapaj' a j = (etapaj' a (j-1)) ++ (etapaj'' a j)
 
 etapaj'' :: Matriz -> Integer -> [((Integer,Integer),Double)]
 etapaj'' a j = (map (\x -> (((fst x), ((snd x) - (f x * mk))))) (darFila a (j+1)))
     where mk = multFila a 1 (j+1)
           f x = ( snd (head (filter (\y -> snd (fst(y)) == snd (fst x)) (operFila a 1))))
 
-etapaj' :: Matriz -> Integer -> [((Integer,Integer),Double)]
-etapaj' a 1  = etapaj'' a 1 
-etapaj' a j = (etapaj' a (j-1)) ++ (etapaj'' a j)
-
-etapaj :: Matriz -> Integer -> Matriz 
-etapaj a j = listArray ((1,1),((j+1),(j))) (map (\x -> snd x) (etapaj' a j))
-
-
+{-Funcion que devuelve la submatriz que sera procesada dependiendo de la etapa k en la que va el proceso-}
 operm :: Matriz -> Integer -> Matriz
-operm a 1 =  a
-operm a k = leerMatriz  (snd(snd(bounds a))-1) (map (\x -> snd x)(filter (\x -> (snd(fst(x)) >= k && (fst(fst(x))) >= k)) (assocs a)))
+operm a k = leerMatriz (n-(k-1)) (map (\x -> snd x)(filter (\x -> (snd(fst(x)) >= k && (fst(fst(x))) >= k)) (assocs a)))
+            where n = (snd(snd(bounds a)))
 
+{-Funcion que da a cada nuevo valor su respectivo indice para ser ubicado en la matriz A-}
 indOper :: Matriz -> Matriz -> Integer -> Matriz
 indOper a om k = listArray (((k+1),k), (n,n)) (elems om)
                  where n = snd(snd(bounds a))
 
-
+{-Funcion que actualiza la matriz A con sus nuevos valores -}
 actualizar :: Matriz -> Matriz -> Matriz
 actualizar a e = leerMatriz n (map (\x -> snd x)(map (\x -> (act' x (assocs e)) ) (assocs a)))
                   where n = snd(snd(bounds a))
 
+{-Funcion auxiliar que se encarga de sustituir un valor viejo por uno nuevo en la matriz A -}
 act' :: ((Integer,Integer),Double) -> [((Integer,Integer),Double)] -> ((Integer,Integer),Double) 
 act' b e 
      | (filter (\x -> (fst x) == (fst b))e) /= [] = head(filter (\x -> (fst x) == (fst b))e)
@@ -118,5 +121,5 @@ act' b e
 m1 = leerMatriz 3 [2,1,4,3,2,3,6,1,4]
 m2 = leerMatriz 4 [20,1,3,2,4,60,-3,-7,1,2,50,7,-2,-7,4,18]
 m3 = leerMatriz 3 [10,2,5,3,12,2,-4,-5,15]
-prueba = leerMatriz 3 [59.8,-3.6,-7.4,1.95,49.85,6.9,-6.9,4.3,18.2]
---m21 = matrizEtapaj m2 3
+m21 = etapak m2 4 1
+m22 = etapak m2 4 2
