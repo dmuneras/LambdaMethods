@@ -97,8 +97,8 @@ act' b e
      | (filter (\x -> (fst x) == (fst b))e) /= [] = head(filter (\x -> (fst x) == (fst b))e)
      | otherwise = b
 
---etapak  :: Matriz -> Integer -> [((Integer,Integer),Double)]
---etapak a  1 = actualizar a (etapaj a 1)
+etapak  :: Matriz -> Integer -> [((Integer,Integer),Double)]
+etapak a  1 = actualizar a (etapaj a 1)
 --etapak a  j = actualizar (etapak (matrizEtapaj m2 (j-1)) (j-1)) (etapaj a j)
 
 --opermatriz :: Matriz -> [((Integer,Integer),Double)] -> Matriz
