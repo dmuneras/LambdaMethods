@@ -63,8 +63,8 @@ darFila m f  =  filter (\x -> (fst(fst(x))) == f ) (assocs m)
 
 --numsFila m f = map (\x -> snd x)(darFila m f)
 
-operFila :: Matriz -> Integer -> [((Integer,Integer), Double)]
-operFila m f = filter (\x -> snd(fst(x)) >= (f-1)) (darFila m f)
+filaPivote :: Matriz -> [((Integer,Integer), Double)]
+filaPivote m = filter (\x -> snd(fst(x)) >= 0) (darFila m 1)
 
 {- FUNCIONES PARA HALLAR Y VERIFICAR LOS MULTIPLICADORES DE UNA MATRIZ -}
 
