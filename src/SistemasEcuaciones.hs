@@ -84,6 +84,15 @@ sustReg a n k
     where suma l = suma' (map (\y -> mult y  (sustReg a n (k+1))) (filter (\x -> snd x /= 0.0 && col x /= k)(tail (reverse l))))
           col x = snd (fst x)
 
+
+sustProg :: Matriz -> Integer -> Integer -> [(Integer, Double)]
+sustProg a n k
+    | k == n+1 = []
+    | k == 1   = [(k,a!(k,(n+1)) / a!(k,k))]
+    | otherwise = [(k, ((a!(k,(n+1)) - suma (darFila a k))) / a!(k,k))] ++ sustProg a n (k-1)
+    where suma l = suma' (map (\y -> mult y (sustProg a n (k-1))) (filter (\x -> snd x /= 0.0 && col x /= k) (tail (reverse l))))
+          col x = snd (fst x)
+
 mult :: ((Integer,Integer),Double) -> [(Integer,Double)] -> Double
 mult a l = snd a * snd (head (filter(\x -> fst x == col a) l))
            where col y = snd(fst y)
@@ -107,4 +116,6 @@ m4 = leerMatriz 4 [2,-3,10,-7,3,12,-16,16,14,-18,40,-7,16,-8,-50,6]
 m4au = leerMatrizAu 4 [2,-3,10,-7,20, 3,12,-16,16,30 ,14,-18,40,-7, 25 ,16,-8,-50,6,-18]
 m5 = leerMatriz 4 [-7,2,-3,4,5,-1,14,-1,1,9,-7,5,-12,13,-8,-4]
 m2au = leerMatrizAu 4 [20,1,3,2,1, 4,60,-3,-7,1, 1,2,50,7,1, -2,-7,4,18,1]
+l1 = leerMatrizAu 4 [1,0,0,0,0,0.28,1,0,0,0,0.38,0.27,1,0,0,(-0.14),(-0.17),0.27,1,1]
+l2 = leerMatrizAu 3 [1,0,0,9,1.25,1,0,7,0.25,0.7142857143,1,12]
 
