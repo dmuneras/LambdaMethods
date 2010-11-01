@@ -1,35 +1,44 @@
 module SistemasEcuaciones where
+
 import GramaticaAbstracta
 import Data.Array
+import Data.List
 import FuncionesAuxiliaresSE
 
 
 {- ELIMINACION GAUSIANA-}
 
+{-Funcion que entrega la matriz 'a' con la eliminacion gaussiana simple aplicada en la etapa k (ultima)
+-}
 matrizEGaussSim :: Matriz -> Integer ->Matriz
 matrizEGaussSim a n = etapak a n (n-1)
 
+{-Funcion que calcula la matriz 'a' en la etapa pasada como parametro aplicando eliminacion gaussiana simple
+-}
 etapak :: Matriz -> Integer -> Integer -> Matriz
 etapak a n 1 = actualizar a (indOper a (submatriz (operm a 1) (n-1)) 1)
 etapak a n k = actualizar (etapak a n (k-1)) (indOper (etapak a n (k-1)) (submatriz (operm (etapak a n (k-1)) k) (n-k) )k )
 
-{-Funcion que se encarga de las transformaciones de fila en cada etapa k, utiliza la funcion etapai' que a su vez utiliza la funcion etapai''-}
-
+{-Funcion transforma la lista de nuevas filas para la etapa k arrojadas en nuevasFilas y las transforma en una matriz que a su vez sera agregada en la matriz principal debajo de la fila pivote
+-}
 submatriz :: Matriz -> Integer -> Matriz
 submatriz a i = listArray ((1,1),(i,(i+2))) (map (\x -> snd x) (nuevasFilas a i))
 
+{-Funcion que reune todas las nuevas filas en una etapa k
+-}
 nuevasFilas :: Matriz -> Integer -> [((Integer,Integer),Double)]
 nuevasFilas a 1 = nuevaFila a 1
 nuevasFilas a i = (nuevasFilas a (i-1)) ++ (nuevaFila a i)
 
+{-Funcion que calcula una nueva fila en una etapa k
+-}
 nuevaFila :: Matriz -> Integer -> [((Integer,Integer),Double)]
 nuevaFila a i = (map (\x -> (((fst x), ((snd x) - (f x * mk))))) (darFila a (i+1)))
     where mk = multFila a 1 (i+1)
           f x = ( snd (head (filter (\y -> snd (fst(y)) == snd (fst x)) (filaPivote a))))
 
-{-FUNCIONES DE ACTUALIZACION DE MATRIZ-}
-
-{-Funcion que devuelve la submatriz que sera procesada dependiendo de la etapa k en la que va el proceso-}
+{-Funcion que devuelve la submatriz que sera procesada dependiendo de la etapa k en la que va el proceso
+-}
 operm :: Matriz -> Integer -> Matriz
 operm a k
       | (snd(snd(bounds a)) == fst (snd(bounds a))) = leerMatriz (n-(k-1)) ar
@@ -37,76 +46,128 @@ operm a k
             where n = (snd(snd(bounds a)))
                   ar = (map (\x -> snd x)(filter (\x -> (snd(fst(x)) >= k && (fst(fst(x))) >= k)) (assocs a)))
 
-{-Funcion que da a cada nuevo valor su respectivo indice para ser ubicado en la matriz -}
-indOper :: Matriz -> Matriz -> Integer -> Matriz
-indOper a om k
-        |(snd(snd(bounds a)) == fst (snd(bounds a))) = listArray (((k+1),k), (n,n)) (elems om)
-        | otherwise = listArray (((k+1),k), ((n-1),n)) (elems om)
-                 where n = snd(snd(bounds a))
-
-{-Funcion que actualiza la matriz con sus nuevos valores -}
-actualizar :: Matriz -> Matriz -> Matriz
-actualizar a e
-           | (snd(snd(bounds a)) == fst (snd(bounds a))) = leerMatriz n ar
-           | otherwise = leerMatrizAu (n-1) ar
-                where n = snd(snd(bounds a))
-                      ar = (map (\x -> snd x)(map (\x -> (act' x (assocs e))) (assocs a)))
-
-{-Funcion auxiliar que se encarga de sustituir un valor viejo por uno nuevo en la matriz -}
-act' :: ((Integer,Integer),Double) -> [((Integer,Integer),Double)] -> ((Integer,Integer),Double)
-act' b e
-     | (filter (\x -> (fst x) == (fst b))e) /= [] = head(filter (\x -> (fst x) == (fst b))e)
-     | otherwise = b
-
-
-
 {- PIVOTEO PARCIAL-}
 
+{-Funcion que entrega la matriz 'a' con la eliminacion gaussiana con pivoteo parcial aplicada en la etapa k (ultima)
+-}
 matrizEGaussParcial :: Matriz -> Integer ->Matriz
 matrizEGaussParcial a n = etapakParcial a n (n-1)
 
+{-Funcion que realiza el pivoteo parcial en la submatriz que se esta operando
+-}
 pivoteoParcial :: Matriz -> Matriz 
 pivoteoParcial om = cambioFilas om 1 (filaMayor (buscarMayorParcial om 1))
                     where filaMayor x = fst(fst x)
 
+{-Funcion que calcula la matriz 'a' en la etapa pasada como parametro aplicando eliminacion gaussiana con pivoteo parcial
+-}
 etapakParcial :: Matriz -> Integer -> Integer -> Matriz
-etapakParcial a n 1 = actualizar ap (indOper ap (submatriz (operm ap 1) (n-1)) 1)
-                      where ap = pivoteoParcial a
-etapakParcial a n k = actualizar (etapakParcial ap n (k-1)) (indOper (etapakParcial ap n (k-1)) (submatriz (operm (etapakParcial ap n (k-1)) k) (n-k) )k )
-                      where ap = pivoteoParcial a
+etapakParcial a n k
+              | (k == 1) = actualizar ap (indOper ap (submatriz (operm ap 1) (n-1)) 1)
+              | (k > 1)  = actualizar (etapakParcial ap n (k-1)) (indOper (etapakParcial ap n (k-1)) (submatriz (operm (etapakParcial ap n (k-1)) k) (n-k) )k )
+              | (otherwise) = error "Fuera de rango, valor negativo"
+              where ap = pivoteoParcial a
+
 {-SUSTITUCIONES-}
 
+{-Funcion que realiza sustitucion regresiva sobre una matriz (aumentada) triangular inferior
+-}
 sustReg :: Matriz -> Integer -> Integer -> [(Integer,Double)]
 sustReg a n k 
     | k == 0 = []
     | k == n = [(k,a!(n,(n+1)) / a!(n,n))]
-    | otherwise = [(k,(a!(k,(n+1)) - suma (darFila a k)) / a!(k,k))] ++ sustReg a n (k+1)
-    where suma l = suma' (map (\y -> mult y  (sustReg a n (k+1))) (filter (\x -> snd x /= 0.0 && col x /= k)(tail (reverse l))))
+    | otherwise = [(k,((a!(k,(n+1)) - suma (darFila a k))) / a!(k,k))] ++ sustReg a n (k+1)
+    where suma l = sum (map (\y -> mult y  (sustReg a n (k+1))) (filter (\x -> snd x /= 0.0 && col x /= k)(tail (reverse l))))
           col x = snd (fst x)
 
-
+{-Funcion que realiza sustitucion progresiva sobre una matriz (aumentada) triangular superior
+-}
 sustProg :: Matriz -> Integer -> Integer -> [(Integer, Double)]
 sustProg a n k
     | k == n+1 = []
     | k == 1   = [(k,a!(k,(n+1)) / a!(k,k))]
     | otherwise = [(k, ((a!(k,(n+1)) - suma (darFila a k))) / a!(k,k))] ++ sustProg a n (k-1)
-    where suma l = suma' (map (\y -> mult y (sustProg a n (k-1))) (filter (\x -> snd x /= 0.0 && col x /= k) (tail (reverse l))))
+    where suma l = sum (map (\y -> mult y (sustProg a n (k-1))) (filter (\x -> snd x /= 0.0 && col x /= k) (tail (reverse l))))
           col x = snd (fst x)
 
+{-Funcion que multiplica un coeficiente dado con las variable asociada al mismo en una lista de variables despejadas
+-}
 mult :: ((Integer,Integer),Double) -> [(Integer,Double)] -> Double
 mult a l = snd a * snd (head (filter(\x -> fst x == col a) l))
            where col y = snd(fst y)
 
-suma' [] = 0
-suma' [x] = x
-suma' (x:xs) = x + suma' xs
+{-METODOS-}
 
-{-Metodos-}
+--Eliminacion Gaussiana Simple
 eGaussSim :: Matriz -> Integer -> [(Integer,Double)]
 eGaussSim au n = sustReg (matrizEGaussSim au n) n 1
 
+--Eliminacion Gaussiana con Pivoteo Parcial
 eGaussPParcial :: Matriz -> Integer -> [(Integer,Double)]
 eGaussPParcial au n = sustReg (matrizEGaussParcial au n) n 1
+
+{-Metodos Iterativos-}
+--Jacobi: Funcion que recibe los parametros iniciales y llama al ciclo prinicpal
+jacobi :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Integer -> [(Integer,Double)]
+jacobi a x0 b n lam tol iter = jacobi' a x0 b n lam (tol+1) tol iter
+
+--Funcion que aplica el metodo
+jacobi' :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Double -> Integer -> [(Integer,Double)]
+jacobi' a x0 b n lam  e tol i
+        | (e > tol && i > 0) = jacobi' a x1 b n lam err tol (i-1)
+        | (e <= tol) = x0
+        | (otherwise) = error "El metodo no converge en las iteraciones dadas"
+        where x1 = x1Jacobi a x0 b lam n n
+              err = normMax x1 x0
+
+--Funcion que halla los nuevos valores para el metodo de Jacobi
+x1Jacobi :: Matriz -> [(Integer,Double)] -> Matriz -> Double -> Integer -> Integer -> [(Integer,Double)]
+x1Jacobi a x0 b lam n i
+         | (i == 1) = [(1,(lam) * (((b!(1,1)) - suma2) / (a!(1,1))) + (1-lam) * (snd (head x0)))]
+         | (i > 1)  = [(i,(lam) * (((b!(i,1)) - suma1 - suma2) / (a!(i,i))) + (1-lam) * (snd (head ant)))] ++ (x1Jacobi a x0 b lam n (i-1))
+         | (otherwise) = error "Fuera de rango, valor negativo"
+         where suma1 = sum (map (\x -> mult x x0) (filter (\y -> col y <= (i-1)) (darFila a i)))
+               suma2 = sum (map (\x -> mult x x0) (filter (\y -> col y >= (i+1)) (darFila a i)))
+               col e = snd (fst e)
+               ant = filter (\x -> fst x == i) x0
+
+--Gauss Seidel: Funcion que recibe los parametros iniciales y llama al ciclo principal
+gaussSeidel :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Integer -> [(Integer,Double)]
+gaussSeidel a x0 b n lam tol iter = gaussSeidel' a x0 b n lam (tol+1) tol iter
+
+--Funcion que aplica el metodo
+gaussSeidel' :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Double -> Integer -> [(Integer,Double)]
+gaussSeidel' a x0 b n lam e tol i
+             | (e > tol && i > 0) = gaussSeidel' a x1 b n lam err tol (i-1)
+             | (e <= tol) = x0
+             | (otherwise) = error "El metodo no converge en las iteraciones dadas"
+             where x1 = x1GaussS a x0 b lam n n
+                   err = normMax x1 x0
+
+--Funcion que halla los nuevos valores para el metodo de Gauss Seidel
+x1GaussS :: Matriz -> [(Integer,Double)] -> Matriz -> Double -> Integer -> Integer -> [(Integer,Double)]
+x1GaussS a x0 b lam n i
+         | (i == 1) = [(1,(lam) * (((b!(1,1)) - suma2) / (a!(1,1))) + (1-lam) * (snd (head x0)))]
+         | (i > 1)  = [(i,(lam) * (((b!(i,1)) - suma1 - suma2) / (a!(i,i))) + (1-lam) * (snd (head ant)))] ++ (x1GaussS a x0 b lam n (i-1))
+         | (otherwise) = error "Fuera de rango, valor negativo"
+         where suma1 = sum (map (\x -> mult x x1) (filter (\y -> col y <= (i-1)) (darFila a i)))
+               suma2 = sum (map (\x -> mult x x0) (filter (\y -> col y >= (i+1)) (darFila a i)))
+               col e = snd (fst e)
+               x1 = x1GaussS a x0 b lam n (i-1)
+               ant = filter (\x -> fst x == i) x0
+
+--Funcion que aplica la Norma Maxima a dos vectores (actual y anterior) de valores
+normMax :: [(Integer, Double)] -> [(Integer,Double)] -> Double
+normMax x1 x0 = maximum (toListSim (map (\x -> res x x0) x1)) / maximum (map (\x -> abs x) (toListSim x1))
+
+--Funcion que resta un x actual con su respectivo x anterior
+res :: (Integer,Double) -> [(Integer,Double)] -> (Integer,Double)
+res x1 x0 = (1,abs (snd x1 - snd (head (filter (\x -> (fst x) == (fst x1)) x0))))
+
+--Funcion que transforma una lista de valores con indices en una lista de valores
+toListSim :: [(Integer,Double)] -> [Double]
+toListSim [x] = [snd x]
+toListSim (x:xs) = [snd x] ++ toListSim xs
 
 {-PARA PRUEBAS-}
 m1 = leerMatriz 3 [2,1,4,3,2,3,6,1,4]
@@ -118,4 +179,13 @@ m5 = leerMatriz 4 [-7,2,-3,4,5,-1,14,-1,1,9,-7,5,-12,13,-8,-4]
 m2au = leerMatrizAu 4 [20,1,3,2,1, 4,60,-3,-7,1, 1,2,50,7,1, -2,-7,4,18,1]
 l1 = leerMatrizAu 4 [1,0,0,0,0,0.28,1,0,0,0,0.38,0.27,1,0,0,(-0.14),(-0.17),0.27,1,1]
 l2 = leerMatrizAu 3 [1,0,0,9,1.25,1,0,7,0.25,0.7142857143,1,12]
-
+--Para probar metodos iterativos
+iter1 = leerMatriz 3 [-17,-2,8,5,-12,-1,-3,7,-16]
+biter1 = leerB 3 [38,43,56]
+x01 = [(1,(-2.23)),(2,(-3.58)),(3,(-3.5))]
+iter2 = leerMatriz 3 [4,-2,1,3,-7,4,5,-6,10]
+biter2 = leerB 3 [8,12,8]
+x02 = [(1,1.8),(2,(-1.54)),(3,0.72)]
+iter3 = leerMatriz 4 [31,-2,7,-8,3,21,-6,-2,5,-2,16,-4,7,-5,4,-38]
+biter3 = leerB 4 [20,-50,16,-16]
+x03 = [(1,0.64),(2,(-2.47)),(3,0.48),(4,0.91)]

@@ -142,3 +142,8 @@ pTrig = pSen <|> pCos <|> pTan <|> pCot <|> pSec <|> pCsc
 -}	
 pFunc :: Parser Token Func
 pFunc = pConst <|> pVar <|> pFunExpression <|> pFunExpon <|> pFunLn <|> pTrig
+
+{-Parser que reconoce una lista de doubles
+-}
+pListDouble :: Parser Token [Double]
+pListDouble = pList pDouble

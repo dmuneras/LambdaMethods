@@ -240,3 +240,5 @@ ff = ((tov 'x') ^/ (ton 2)) -/ (ton 2)
 
 aleja :: Func
 aleja = ((tov 'x' */ (sec_ (tov 'x'))^/ ton(2) ))
+
+parcial = (sen_ (tov 'x')) +/ cos_((ton 1) +/ (tov 'x'^/ (ton 2))) -/ (ton 1.3)
