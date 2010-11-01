@@ -26,6 +26,7 @@ data Func = FConst Double  	--Una constante
 {-Definicion del tipo de dato matriz-}
 type Matriz = Array (Integer, Integer) Double
 
+
 instance Show Func where
     show (FConst a) = (show a)
     show (FVar x) = [x]

@@ -106,7 +106,7 @@ eGaussSim au n = sustReg (matrizEGaussSim au n) n 1
 eGaussPParcial :: Matriz -> Integer -> [(Integer,Double)]
 eGaussPParcial au n = sustReg (matrizEGaussParcial au n) n 1
 
-{-Metodos Iterativos-}
+{-METODOS ITERATIVOS-}
 --Jacobi: Funcion que recibe los parametros iniciales y llama al ciclo prinicpal
 jacobi :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Integer -> [(Integer,Double)]
 jacobi a x0 b n lam tol iter = jacobi' a x0 b n lam (tol+1) tol iter
@@ -169,6 +169,40 @@ toListSim :: [(Integer,Double)] -> [Double]
 toListSim [x] = [snd x]
 toListSim (x:xs) = [snd x] ++ toListSim xs
 
+{-FUNCIONES MULTIPLICACION DE MATRICES-}
+
+identidad :: Integer -> Matriz 
+identidad n = (leerMatriz n (ceros (n*n))) // [((i,i),1)|i <- [1..n]] 
+
+matrizNula :: Integer -> Matriz
+matrizNula n = leerMatriz n (ceros (n*n)) 
+
+ceros :: Integer -> [Double]
+ceros 0 = []
+ceros 1 = [0]
+ceros n = (ceros (n-1)) ++ [0]
+ 
+
+matMult:: (Ix a, Ix b, Ix c, Num d) => Array (a,b) d -> Array (b,c) d -> Array (a,c) d
+matMult x y = accumArray (+) 0 resultBounds [((i,j), x!(i,k) * y!(k,j)) | i <- range (li,ui), j <- range (lj',uj') ,
+                                                                               k <- range (lj,uj)  ]
+        where ((li,lj),(ui,uj))         =  bounds x
+              ((li',lj'),(ui',uj'))     =  bounds y
+              resultBounds
+                | (lj,uj)==(li',ui')    =  ((li,lj'),(ui,uj'))
+                | otherwise             = error "matMult: límites incompatibles"
+  
+doolitle :: Matriz -> Matriz 
+doolitle a = accumArray (+) 0 resultBounds  [((i,j), a!(i,k) * (identidad n)!(k,j)) | i <- range (li,ui), j <- range (lj',uj') ,
+                                                                               k <- range (lj,uj) ]
+              where ((li,lj),(ui,uj)) =  bounds a
+                    ((li',lj'),(ui',uj'))     =  bounds a
+                    n = snd(snd(bounds a))
+                    resultBounds
+                        | (lj,uj)==(li',ui')    =  ((li,lj'),(ui,uj'))
+                        | otherwise             = error "matMult: límites incompatibles"
+  
+
 {-PARA PRUEBAS-}
 m1 = leerMatriz 3 [2,1,4,3,2,3,6,1,4]
 m2 = leerMatriz 4 [20,1,3,2,4,60,-3,-7,1,2,50,7,-2,-7,4,18]
@@ -189,3 +223,6 @@ x02 = [(1,1.8),(2,(-1.54)),(3,0.72)]
 iter3 = leerMatriz 4 [31,-2,7,-8,3,21,-6,-2,5,-2,16,-4,7,-5,4,-38]
 biter3 = leerB 4 [20,-50,16,-16]
 x03 = [(1,0.64),(2,(-2.47)),(3,0.48),(4,0.91)]
+
+mm1 = leerMatriz 2 [1,2,3,4]
+mm2 = leerMatriz 2 [2,3,4,5]
