@@ -46,6 +46,23 @@ operm a k
             where n = (snd(snd(bounds a)))
                   ar = (map (\x -> snd x)(filter (\x -> (snd(fst(x)) >= k && (fst(fst(x))) >= k)) (assocs a)))
 
+{-PIVOTEO TOTAL-}
+
+matrizEGaussTotal :: Matriz -> Integer -> Matriz
+matrizEGaussTotal a n = etapakTotal a n (n-1)
+ 
+pivoteoTotal :: Matriz -> Integer -> Matriz 
+pivoteoTotal om i = pivoteoParcial (cambioColumnas om i (snd(fst(buscarMayorTotal om)))) i
+
+{-Funcion que calcula la matriz 'a' en la etapa pasada como parametro aplicando eliminacion gaussiana con pivoteo total-}
+etapakTotal :: Matriz -> Integer -> Integer -> Matriz
+etapakTotal a n k
+              | (k == 1) = actualizar ap (indOper ap (submatriz (operm ap 1) (n-1)) 1)
+              | (k > 1)  = actualizar anterior  (indOper anterior (submatriz  (operm anterior k)  (n-k) )k )
+              | (otherwise) = error "Fuera de rango, valor negativo"
+              where ap = pivoteoTotal a k
+                    anterior = (etapakParcial ap n (k-1))
+                               
 {- PIVOTEO PARCIAL-}
 
 {-Funcion que entrega la matriz 'a' con la eliminacion gaussiana con pivoteo parcial aplicada en la etapa k (ultima)
@@ -55,8 +72,8 @@ matrizEGaussParcial a n = etapakParcial a n (n-1)
 
 {-Funcion que realiza el pivoteo parcial en la submatriz que se esta operando
 -}
-pivoteoParcial :: Matriz -> Matriz 
-pivoteoParcial om = cambioFilas om 1 (filaMayor (buscarMayorParcial om 1))
+pivoteoParcial :: Matriz -> Integer -> Matriz 
+pivoteoParcial om i = cambioFilas om i (filaMayor (buscarMayorParcial om i))
                     where filaMayor x = fst(fst x)
 
 {-Funcion que calcula la matriz 'a' en la etapa pasada como parametro aplicando eliminacion gaussiana con pivoteo parcial
@@ -64,9 +81,10 @@ pivoteoParcial om = cambioFilas om 1 (filaMayor (buscarMayorParcial om 1))
 etapakParcial :: Matriz -> Integer -> Integer -> Matriz
 etapakParcial a n k
               | (k == 1) = actualizar ap (indOper ap (submatriz (operm ap 1) (n-1)) 1)
-              | (k > 1)  = actualizar (etapakParcial ap n (k-1)) (indOper (etapakParcial ap n (k-1)) (submatriz (operm (etapakParcial ap n (k-1)) k) (n-k) )k )
+              | (k > 1)  = actualizar anterior  (indOper anterior (submatriz  (pivoteoParcial(operm anterior k) k)  (n-k) )k )
               | (otherwise) = error "Fuera de rango, valor negativo"
-              where ap = pivoteoParcial a
+              where ap = pivoteoParcial a k
+                    anterior = (etapakParcial ap n (k-1)) 
 
 {-SUSTITUCIONES-}
 
@@ -105,6 +123,9 @@ eGaussSim au n = sustReg (matrizEGaussSim au n) n 1
 --Eliminacion Gaussiana con Pivoteo Parcial
 eGaussPParcial :: Matriz -> Integer -> [(Integer,Double)]
 eGaussPParcial au n = sustReg (matrizEGaussParcial au n) n 1
+
+eGaussPTotal :: Matriz -> Integer -> [(Integer,Double)]
+eGaussPTotal au n = sustReg (matrizEGaussTotal au n) n 1
 
 {-METODOS ITERATIVOS-}
 --Jacobi: Funcion que recibe los parametros iniciales y llama al ciclo prinicpal
@@ -192,16 +213,6 @@ matMult x y = accumArray (+) 0 resultBounds [((i,j), x!(i,k) * y!(k,j)) | i <- r
                 | (lj,uj)==(li',ui')    =  ((li,lj'),(ui,uj'))
                 | otherwise             = error "matMult: límites incompatibles"
   
-doolitle :: Matriz -> Matriz 
-doolitle a = accumArray (+) 0 resultBounds  [((i,j), a!(i,k) * (identidad n)!(k,j)) | i <- range (li,ui), j <- range (lj',uj') ,
-                                                                               k <- range (lj,uj) ]
-              where ((li,lj),(ui,uj)) =  bounds a
-                    ((li',lj'),(ui',uj'))     =  bounds a
-                    n = snd(snd(bounds a))
-                    resultBounds
-                        | (lj,uj)==(li',ui')    =  ((li,lj'),(ui,uj'))
-                        | otherwise             = error "matMult: límites incompatibles"
-  
 
 {-PARA PRUEBAS-}
 m1 = leerMatriz 3 [2,1,4,3,2,3,6,1,4]
@@ -226,3 +237,5 @@ x03 = [(1,0.64),(2,(-2.47)),(3,0.48),(4,0.91)]
 
 mm1 = leerMatriz 2 [1,2,3,4]
 mm2 = leerMatriz 2 [2,3,4,5]
+mparcial = leerMatrizAu 3 [5,-12,-1,43,-3,7,-16,56,-17,-2,8,38]
+mparcial' = leerMatrizAu 3 [2,-9,-1,-29, -3,-1,13,-54,-12,1,-2,-80]

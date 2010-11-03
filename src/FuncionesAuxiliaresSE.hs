@@ -27,7 +27,11 @@ mayor' (x:xs)
        | otherwise = mayor' xs
 
 buscarMayorTotal :: Matriz -> ((Integer,Integer), Double)
-buscarMayorTotal m = head(filter (\x -> (snd x == (mayor m))) (assocs m))
+buscarMayorTotal m 
+                 | snd(snd(bounds m)) == n = head(filter (\x -> (snd x == (mayor m))) (assocs m))
+                 | otherwise = head(filter (\x -> (snd x == (mayor a))) (assocs a))
+                               where a = m // [((i,(n+1)),0)|i <- [1..n]]
+                                     n = fst(snd(bounds m))
 
 buscarMayorParcial :: Matriz -> Integer -> ((Integer,Integer),Double)
 buscarMayorParcial m c = head (filter (\x -> (snd x == (mayor (darColumna m c )))) (assocs (darColumna m c )))
@@ -95,3 +99,5 @@ indOper a om k
         |(snd(snd(bounds a)) == fst (snd(bounds a))) = listArray (((k+1),k), (n,n)) (elems om)
         | otherwise = listArray (((k+1),k), ((n-1),n)) (elems om)
                  where n = snd(snd(bounds a))
+
+--m4au = leerMatrizAu 4 [2,-3,10,-7,20, 3,12,-16,16,30 ,14,-18,40,-7, 25 ,16,-8,-50,6,-18]
