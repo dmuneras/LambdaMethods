@@ -8,21 +8,17 @@ import Graphics.UI.Gtk
 import Foreign
 
 
-main :: IO ()
-main= do
-     initGUI
-     window <- windowNew
-     set window [windowTitle := "Hello Cairo",
-                 windowDefaultWidth := 300, windowDefaultHeight := 200,
-                 containerBorderWidth := 30 ]
-
-     frame <- frameNew
-     containerAdd window frame
-     canvas <- drawingAreaNew
-     containerAdd frame canvas
-     widgetModifyBg canvas StateNormal (Color 65535 65535 65535)
-     widgetShowAll window 
-     onDestroy window mainQuit
-     mainGUI
+sistemasEcuaciones :: IO Table
+sistemasEcuaciones= do
+                      table <- tableNew 2 1 False
+                      content <- vBoxNew False 10
+                      frame <- frameNew
+                      tableAttachDefaults table content 0 1 0 1
+                      boxPackStart content frame PackNatural 5
+                      canvas <- drawingAreaNew
+                      containerAdd frame canvas
+                      widgetModifyBg canvas StateNormal (Color 65535 65535 65535)
+                      return table
+    
 
 

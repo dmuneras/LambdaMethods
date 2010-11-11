@@ -1,5 +1,6 @@
 module InterfazPrincipal where
 import InterfazENL
+import InterfazSE
 import Graphics.UI.Gtk
 
 
@@ -7,7 +8,7 @@ main :: IO ()
 main= do
      initGUI
      window <- windowNew
-     set window [windowTitle := "LambdaMethods", windowDefaultWidth := 500,
+     set window [windowTitle := "LambdaMethods", windowDefaultWidth := 400,
                  windowDefaultHeight := 800,  windowDecorated := True]
      
      ntbk <- notebookNew 
@@ -16,6 +17,7 @@ main= do
                     notebookTabPos := PosLeft ]
 
      add_page ntbk ecuacionesNoLineales "Ecuaciones No Lineales"  
+     add_page ntbk sistemasEcuaciones "Sistemas de Ecuaciones"  
      onSwitchPage ntbk (putStrLn . ((++)"Page: ") . show)
      
      widgetShowAll window

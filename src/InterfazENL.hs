@@ -8,9 +8,9 @@ import Graphics.UI.Gtk
 import Foreign
 
 
---ecuacionesNoLineales :: IO Table
+ecuacionesNoLineales :: IO Table
 ecuacionesNoLineales = do table <- tableNew 9 1 False
-                          set table [tableColumnSpacing := 100, tableHomogeneous := False]
+                          tableSetColSpacings table 10
                           content <- vBoxNew False 0
                           tableAttachDefaults table content 0 1 0 1
                           entrada <- entryNew
@@ -23,10 +23,10 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart content graficar  PackNatural 0
                           ayuda <- buttonNewWithLabel "Necesitas ayuda?"
                           boxPackStart content ayuda  PackNatural 0
-            
+                          
                           {-BUSQUEDAS INCREMENTALES-}
 
-                          busqdInc <- hBoxNew False 0 
+                          busqdInc <- hBoxNew False 25
                           option <- vBoxNew False 0
                           ba <- vBoxNew False 0
                           bb <- vBoxNew False 0 
@@ -40,19 +40,19 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart busqdInc bi PackNatural 0
   
    
-                          labela <- labelNew (Just "Ingrese valor inicial  ")
+                          labela <- labelNew (Just " valor inicial  ")
                           miscSetAlignment labela 0 0
                           boxPackStart ba labela PackNatural 0
                           a <- entryNew
                           boxPackStart ba a PackNatural 0
 
-                          labelb <- labelNew (Just "Ingrese incremento ")
+                          labelb <- labelNew (Just "incremento ")
                           miscSetAlignment labelb 0 0
                           boxPackStart bb labelb PackNatural 0
                           b <- entryNew 
                           boxPackStart bb b PackNatural 0
   
-                          labeli <- labelNew (Just "Ingrese numero de iteraciones ")
+                          labeli <- labelNew (Just " iteraciones ")
                           miscSetAlignment labeli 0 0
                           boxPackStart bi labeli PackNatural 0
                           i <- entryNew
@@ -60,7 +60,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
    
                           {-BISECCION-}
   
-                          biseccion <- hBoxNew False 0 
+                          biseccion <- hBoxNew False 6 
                           optionb <- vBoxNew False 0
                           bab <- vBoxNew False 0
                           bbb <- vBoxNew False 0 
@@ -76,25 +76,25 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart biseccion btolb PackNatural 0
                           boxPackStart biseccion bib PackNatural 0
   
-                          labelab     <- labelNew (Just "Ingrese valor de a ")
+                          labelab     <- labelNew (Just "valor de a ")
                           miscSetAlignment labelab 0 0
                           boxPackStart bab labelab PackNatural 0
                           ab <- entryNew
                           boxPackStart bab ab PackNatural 0
   
-                          labelbb <- labelNew (Just "Ingrese valor de b ")
+                          labelbb <- labelNew (Just "valor de b ")
                           miscSetAlignment labelbb 0 0
                           boxPackStart bbb labelbb PackNatural 0
                           bb <- entryNew 
                           boxPackStart bbb bb PackNatural 0
    
-                          labeltolb     <- labelNew (Just "Ingrese tolerancia ")
+                          labeltolb     <- labelNew (Just "tolerancia ")
                           miscSetAlignment labeltolb 0 0
                           boxPackStart btolb labeltolb PackNatural 0
                           tol <- entryNew
                           boxPackStart btolb tol PackNatural 0
 
-                          labelib     <- labelNew (Just "Ingrese iteraciones ")
+                          labelib     <- labelNew (Just "iteraciones ")
                           miscSetAlignment labelib 0 0
                           boxPackStart bib labelib PackNatural 0
                           ib <- entryNew
@@ -102,7 +102,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           return table
                           {-REGLAFALSA-}
   
-                          reglaFalsa <- hBoxNew False 0 
+                          reglaFalsa <- hBoxNew False 6
                           optionr <- vBoxNew False 0
                           bar <- vBoxNew False 0
                           bbr <- vBoxNew False 0 
@@ -118,32 +118,32 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart reglaFalsa btolr PackNatural 0
                           boxPackStart reglaFalsa bir PackNatural 0
   
-                          labelar <- labelNew (Just "Ingrese valor de a ")
+                          labelar <- labelNew (Just "valor de a ")
                           miscSetAlignment labelar 0 0
                           boxPackStart bar labelar PackNatural 0
                           ar <- entryNew
                           boxPackStart bar ar PackNatural 0
   
-                          labelbr <- labelNew (Just "Ingrese valor de b ")
+                          labelbr <- labelNew (Just "valor de b ")
                           miscSetAlignment labelbr 0 0
                           boxPackStart bbr labelbr PackNatural 0
                           br <- entryNew 
                           boxPackStart bbr br PackNatural 0
    
-                          labeltolr     <- labelNew (Just "Ingrese tolerancia ")
+                          labeltolr     <- labelNew (Just "tolerancia ")
                           miscSetAlignment labeltolr 0 0
                           boxPackStart btolr labeltolr PackNatural 0
                           tolr <- entryNew
                           boxPackStart btolr tolr PackNatural 0
 
-                          labelir <- labelNew (Just "Ingrese iteraciones ")
+                          labelir <- labelNew (Just "iteraciones ")
                           miscSetAlignment labelir 0 0
                           boxPackStart bir labelir PackNatural 0
                           ir <- entryNew
                           boxPackStart bir ir PackNatural 0
                           
                           {-PUNTO FIJO-}
-                          puntoFijo <- hBoxNew False 0 
+                          puntoFijo <- hBoxNew False 6 
                           optionp <- vBoxNew False 0
                           bap <- vBoxNew False 0
                           bbp <- vBoxNew False 0 
@@ -159,25 +159,25 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart puntoFijo btolp PackNatural 0
                           boxPackStart puntoFijo bip PackNatural 0
   
-                          labelap <- labelNew (Just "Ingrese valor inicial ")
+                          labelap <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelap 0 0
                           boxPackStart bap labelap PackNatural 0
                           ap <- entryNew
                           boxPackStart bap ap PackNatural 0
   
-                          labelbp <- labelNew (Just "Ingrese función g ")
+                          labelbp <- labelNew (Just "función g ")
                           miscSetAlignment labelbp 0 0
                           boxPackStart bbp labelbp PackNatural 0
                           bp <- entryNew 
                           boxPackStart bbp bp PackNatural 0
    
-                          labeltolp     <- labelNew (Just "Ingrese tolerancia ")
+                          labeltolp     <- labelNew (Just "tolerancia ")
                           miscSetAlignment labeltolp 0 0
                           boxPackStart btolp labeltolp PackNatural 0
                           tolp <- entryNew
                           boxPackStart btolp tolp PackNatural 0
 
-                          labelip <- labelNew (Just "Ingrese iteraciones ")
+                          labelip <- labelNew (Just "iteraciones ")
                           miscSetAlignment labelip 0 0
                           boxPackStart bip labelip PackNatural 0
                           ip <- entryNew
@@ -185,7 +185,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           
                           {-NEWTON-}
                           
-                          newton <- hBoxNew False 0 
+                          newton <- hBoxNew False 10
                           optionn <- vBoxNew False 0
                           ban <- vBoxNew False 0
                           bbn <- vBoxNew False 0 
@@ -201,32 +201,32 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart newton btoln PackNatural 0
                           boxPackStart newton bin PackNatural 0
   
-                          labelan <- labelNew (Just "Ingrese valor inicial ")
+                          labelan <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelan 0 0
                           boxPackStart ban labelan PackNatural 0
                           an <- entryNew
                           boxPackStart ban an PackNatural 0
   
-                          labelbn <- labelNew (Just "Ingrese derivada ")
+                          labelbn <- labelNew (Just "derivada ")
                           miscSetAlignment labelbn 0 0
                           boxPackStart bbn labelbn PackNatural 0
                           bn <- entryNew 
                           boxPackStart bbn bn PackNatural 0
    
-                          labeltoln   <- labelNew (Just "Ingrese tolerancia ")
+                          labeltoln   <- labelNew (Just "tolerancia ")
                           miscSetAlignment labeltoln 0 0
                           boxPackStart btoln labeltoln PackNatural 0
                           toln <- entryNew
                           boxPackStart btoln toln PackNatural 0
 
-                          labelin <- labelNew (Just "Ingrese iteraciones ")
+                          labelin <- labelNew (Just "iteraciones ")
                           miscSetAlignment labelin 0 0
                           boxPackStart bin labelin PackNatural 0
                           inn <- entryNew
                           boxPackStart bin inn PackNatural 0
                           
                           {-SECANTE-} 
-                          secante <- hBoxNew False 0 
+                          secante <- hBoxNew False 10 
                           options <- vBoxNew False 0
                           bas <- vBoxNew False 0
                           bbs <- vBoxNew False 0 
@@ -242,32 +242,32 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart secante btols PackNatural 0
                           boxPackStart secante bis PackNatural 0
   
-                          labelas <- labelNew (Just "Ingrese valor inicial ")
+                          labelas <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelas 0 0
                           boxPackStart bas labelas PackNatural 0
                           as <- entryNew
                           boxPackStart bas as PackNatural 0
   
-                          labelbs <- labelNew (Just "Ingrese segundo valor ")
+                          labelbs <- labelNew (Just "segundo valor ")
                           miscSetAlignment labelbs 0 0
                           boxPackStart bbs labelbs PackNatural 0
                           bs <- entryNew 
                           boxPackStart bbs bs PackNatural 0
    
-                          labeltols   <- labelNew (Just "Ingrese tolerancia ")
+                          labeltols   <- labelNew (Just "tolerancia ")
                           miscSetAlignment labeltols 0 0
                           boxPackStart btols labeltols PackNatural 0
                           tols <- entryNew
                           boxPackStart btols tols PackNatural 0
 
-                          labelis <- labelNew (Just "Ingrese iteraciones ")
+                          labelis <- labelNew (Just "iteraciones ")
                           miscSetAlignment labelis 0 0
                           boxPackStart bis labelis PackNatural 0
                           ins <- entryNew
                           boxPackStart bis ins PackNatural 0
                           
                           {-RAICES MULTIPLES-}
-                          raices <- hBoxNew False 0 
+                          raices <- hBoxNew False 25 
                           optionrm <- vBoxNew False 0
                           barm <- vBoxNew False 0
                           btolrm<- vBoxNew False 0
@@ -281,20 +281,20 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           boxPackStart raices btolrm PackNatural 0
                           boxPackStart raices birm PackNatural 0
   
-                          labelarm <- labelNew (Just "Ingrese valor inicial ")
+                          labelarm <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelarm 0 0
                           boxPackStart barm labelarm PackNatural 0
                           arm <- entryNew
                           boxPackStart barm arm PackNatural 0
   
    
-                          labeltolrm   <- labelNew (Just "Ingrese tolerancia ")
+                          labeltolrm   <- labelNew (Just "tolerancia ")
                           miscSetAlignment labeltolrm 0 0
                           boxPackStart btolrm labeltolrm PackNatural 0
                           tolrm <- entryNew
                           boxPackStart btolrm tolrm PackNatural 0
 
-                          labelirm <- labelNew (Just "Ingrese iteraciones ")
+                          labelirm <- labelNew (Just "iteraciones ")
                           miscSetAlignment labelirm 0 0
                           boxPackStart birm labelirm PackNatural 0
                           inrm <- entryNew
@@ -315,24 +315,62 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                                 s <- get entrada entryText
                                 f <- parseIO pFunc (funScanTxt s)
                                 graficaXY f
+                          
                           onClicked eval $ do
                                 f <- get entrada entryText
-                                if (unsafePerformIO(toggleButtonGetActive radio2))
-                                 then do 
-                                   a <- get a entryText
-                                   b <- get b entryText
-                                   i <- get i entryText
-                                   process f a b i i "Busqueda incremental"
-                                 else  
-                                     if (unsafePerformIO(toggleButtonGetActive radio3))
+                                if (unsafePerformIO(toggleButtonGetActive radio5))
+                                 then do
+                                        ap <- get ap entryText
+                                        bp <- get bp entryText
+                                        tolp <- get tolp entryText
+                                        ip <- get ip entryText
+                                        process f ap bp tolp ip "Punto Fijo" salida
+                                 else        
+                                     if (unsafePerformIO(toggleButtonGetActive radio4))
                                       then do
-                                        a <- get a entryText
-                                        b <- get b entryText
-                                        i <- get i entryText
-                                        process f a b i i "Busqueda incremental"
-                                                        
-                           return table
-
-      
-    
-                                
+                                             ar <- get ar entryText
+                                             br <- get br entryText
+                                             tolr <- get tolr entryText
+                                             ir <- get ir entryText
+                                             process f ar br tolr ir "Regla falsa " salida
+                                      else
+                                          if (unsafePerformIO(toggleButtonGetActive radio3))
+                                           then do
+                                                  ab <- get ab entryText
+                                                  bb <- get bb entryText
+                                                  tol <- get tol entryText
+                                                  ib <- get ib entryText
+                                                  process f ab bb tol ib "Biseccion "salida
+                                            else
+                                                if (unsafePerformIO(toggleButtonGetActive radio6))
+                                                 then do
+                                                        an <- get an entryText
+                                                        bn <- get bn entryText
+                                                        toln <- get toln entryText
+                                                        inn <- get inn entryText
+                                                        process f an bn toln inn "Newton " salida
+                                                 else 
+                                                     if (unsafePerformIO(toggleButtonGetActive radio7))
+                                                      then do
+                                                             as <- get as entryText
+                                                             bs <- get bs entryText
+                                                             tols <- get tols entryText
+                                                             ins <- get ins entryText
+                                                             process f as bs tols ins "Secante " salida
+                                                      else 
+                                                          if (unsafePerformIO(toggleButtonGetActive radio8))
+                                                           then do
+                                                                  arm <- get arm entryText
+                                                                  tolrm <- get tolrm entryText
+                                                                  irm <- get inrm entryText
+                                                                  process f arm arm tolrm irm "raices " salida
+                                                           else do
+                                                                  a <- get a entryText
+                                                                  b <- get b entryText
+                                                                  i <- get i entryText
+                                                                  process f a b i i "Busqueda incremental " salida
+ 
+  
+                          return table                                       
+                                   
+                              
