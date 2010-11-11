@@ -1,5 +1,6 @@
 module GramaticaAbstracta where
-import Data.Array
+
+import Array
 
 {-Defincion de la gramatica abstracta para escribir funciones e integrales.
 -}
@@ -21,11 +22,11 @@ data Func = FConst Double  	--Una constante
 	  | FSec Func		--Funcion Secante
 	  | FCsc Func		--Funcion Cosecante
 	  | FCot Func		--Funcion Cotangente
+          | FPar Func           --Funcion entre parentesis
 	deriving (Eq, Ord)
 
 {-Definicion del tipo de dato matriz-}
-type Matriz = Array (Integer, Integer) Double
-
+type Matriz = Array (Integer, Integer) Double 
 
 instance Show Func where
     show (FConst a) = (show a)
@@ -43,3 +44,4 @@ instance Show Func where
     show (FSec a) = "Sec(" ++ (show a) ++ ")"
     show (FCsc a) = "Csc(" ++ (show a) ++ ")"
     show (FCot a) = "Cot(" ++ (show a) ++ ")"
+    show (FPar a) = "(" ++ (show a) ++ ")"
