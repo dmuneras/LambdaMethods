@@ -7,17 +7,17 @@ main :: IO ()
 main= do
      initGUI
      window <- windowNew
-     set window [windowTitle := "LambdaMethods", windowDefaultWidth := 800,
-                 windowDefaultHeight := 800 ]
+     set window [windowTitle := "LambdaMethods", windowDefaultWidth := 500,
+                 windowDefaultHeight := 800,  windowDecorated := True]
      
-     ntbk <- notebookNew
+     ntbk <- notebookNew 
      containerAdd window ntbk
      set ntbk [notebookScrollable := True, notebookEnablePopup := False,
                     notebookTabPos := PosLeft ]
 
      add_page ntbk ecuacionesNoLineales "Ecuaciones No Lineales"  
      onSwitchPage ntbk (putStrLn . ((++)"Page: ") . show)
-
+     
      widgetShowAll window
      onDestroy window mainQuit
      mainGUI
