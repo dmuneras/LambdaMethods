@@ -1,4 +1,0 @@
-module FuncionesAuxiliaresSE  where
-import GramaticaAbstracta
-import Data.Array
-
