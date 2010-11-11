@@ -7,62 +7,8 @@ import UU.Parsing
 import Graphics.UI.Gtk
 import Foreign
 
-ayudaENL :: IO()
-ayudaENL =  do
-     initGUI
-     windowAyuda <- windowNew
-     set windowAyuda [windowTitle := "Ayudas Ecuaciones no lineales", windowDefaultWidth := 400,
-                 windowDefaultHeight := 400 ]
 
-     tableAyuda <- tableNew 2 2 True
-     containerAdd windowAyuda tableAyuda
-            
-     text <- labelNew (Just "Seleccione el tema sobre el que necesita ayuda.")
-     tableAttachDefaults tableAyuda text 0 1 0 1
-     
-  
-     radios <- vBoxNew False 0 
-     optionabi <- vBoxNew False 0
-     optionab <- vBoxNew  False 0
-     optionrf <- vBoxNew  False 0
-     optionpf <- vBoxNew  False 0
-     tableAttachDefaults tableAyuda radios 0 1 1 2
-     radioabi <- radioButtonNewWithLabel "Busqueda incremental "
-     radioab <- radioButtonNewWithLabelFromWidget radioabi "Biseccion "
-     radiorf <- radioButtonNewWithLabelFromWidget radioab "Regla falsa "
-     radiopf <- radioButtonNewWithLabelFromWidget radiorf "Punto fijo "
-     boxPackStart optionabi radioabi PackNatural 5
-     boxPackStart optionab radioab PackNatural 5
-     boxPackStart optionrf radiorf PackNatural 5
-     boxPackStart optionpf radiopf PackNatural 5
-     boxPackStart radios optionabi PackNatural 0
-     boxPackStart radios optionab PackNatural 0
-     boxPackStart radios optionrf PackNatural 0
-     boxPackStart radios optionpf PackNatural 0
-     
-     textAyuda <- labelNew Nothing
-     tableAttachDefaults tableAyuda textAyuda 1 2 0 1
-    
-
-     onToggled radioabi $ do
-               labelSetText textAyuda "Búsqueda Incremental"
-               setRadioState radioabi
-     onToggled radioab $ do
-              labelSetText textAyuda (control(controlRadio [radioabi, radioab,radiorf,radiopf]))
-              setRadioState radioab
-     onToggled radiorf $ do
-              labelSetText textAyuda (control(controlRadio [radioabi, radioab,radiorf,radiopf]))
-              setRadioState radiorf
-     onToggled radiopf $ do
-              labelSetText textAyuda (control(controlRadio [radioabi, radioab,radiorf,radiopf]))
-              setRadioState radiopf
-
-    
-     widgetShowAll windowAyuda
-     onDestroy windowAyuda mainQuit
-     mainGUI
-
-ecuacionesNoLineales :: IO Table
+--ecuacionesNoLineales :: IO Table
 ecuacionesNoLineales = do table <- tableNew 9 1 False
                           set table [tableColumnSpacing := 100, tableHomogeneous := False]
                           content <- vBoxNew False 0
@@ -372,20 +318,20 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           onClicked eval $ do
                                 f <- get entrada entryText
                                 if (unsafePerformIO(toggleButtonGetActive radio2))
-                                  then do 
-                                    a <- get a entryText
-                                    b <- get b entryText
-                                    i <- get i entryText
-                                    process f a b i i "Busqueda incremental"
-                                  else  
-                                      if (unsafePerformIO(toggleButtonGetActive radio3))
-                                         then do
-                                           a <- get a entryText
-                                           b <- get b entryText
-                                           i <- get i entryText
-                                           process f a b i i "Busqueda incremental"
-                                      
-                                                   return table
+                                 then do 
+                                   a <- get a entryText
+                                   b <- get b entryText
+                                   i <- get i entryText
+                                   process f a b i i "Busqueda incremental"
+                                 else  
+                                     if (unsafePerformIO(toggleButtonGetActive radio3))
+                                      then do
+                                        a <- get a entryText
+                                        b <- get b entryText
+                                        i <- get i entryText
+                                        process f a b i i "Busqueda incremental"
+                                                        
+                           return table
 
       
     
