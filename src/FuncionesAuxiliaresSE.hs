@@ -15,6 +15,8 @@ leerB :: Integer -> [Double] -> Matriz
 leerB n elem = listArray ((1,1),(n,1)) elem
 
 {-FUNCIONES AUXILIARES PARA PIVOTEOS -}
+mayor2 :: [((Integer,Integer),Double)] -> Double
+mayor2 l = mayor' (map (\x-> snd x)l)
 
 mayor ::Matriz -> Double
 mayor m = mayor' (elems m)
@@ -26,15 +28,8 @@ mayor' (x:xs)
        | abs x > abs (mayor' xs) = x
        | otherwise = mayor' xs
 
-buscarMayorTotal :: Matriz -> ((Integer,Integer), Double)
-buscarMayorTotal m 
-                 | snd(snd(bounds m)) == n = head(filter (\x -> (snd x == (mayor m))) (assocs m))
-                 | otherwise = head(filter (\x -> (snd x == (mayor a))) (assocs a))
-                               where a = m // [((i,(n+1)),0)|i <- [1..n]]
-                                     n = fst(snd(bounds m))
 
-buscarMayorParcial :: Matriz -> Integer -> ((Integer,Integer),Double)
-buscarMayorParcial m c = head (filter (\x -> (snd x == (mayor (darColumna m c )))) (assocs (darColumna m c )))
+
 
 {-La funcion cambio de fila fue tomada del manual "una introduccion agradable a haskell", su funcionamiento se basa en el uso de la funcion //, la cual es una funcion de actualizacion para array, aclaramos que al ser una funcion que no utiliza monadas oviamente no modifica la matriz original, simplemente construye una matriz diferente-}
 
@@ -81,11 +76,11 @@ multFila m k f = snd(head(filter (\x -> fst(fst x) == f) (multsEtapa m k)))
 
 {-Funcion que actualiza la matriz con sus nuevos valores -}
 actualizar :: Matriz -> Matriz -> Matriz
-actualizar a e
+actualizar a ma
            | (snd(snd(bounds a)) == fst (snd(bounds a))) = leerMatriz n ar
            | otherwise = leerMatrizAu (n-1) ar
                 where n = snd(snd(bounds a))
-                      ar = (map (\x -> snd x)(map (\x -> (act' x (assocs e))) (assocs a)))
+                      ar = (map (\x -> snd x)(map (\x -> (act' x (assocs ma))) (assocs a)))
 
 {-Funcion auxiliar que se encarga de sustituir un valor viejo por uno nuevo en la matriz -}
 act' :: ((Integer,Integer),Double) -> [((Integer,Integer),Double)] -> ((Integer,Integer),Double)
@@ -93,11 +88,17 @@ act' b e
      | (filter (\x -> (fst x) == (fst b))e) /= [] = head(filter (\x -> (fst x) == (fst b))e)
      | otherwise = b
 
+
 {-Funcion que da a cada nuevo valor su respectivo indice para ser ubicado en la matriz -}
 indOper :: Matriz -> Matriz -> Integer -> Matriz
 indOper a om k
-        |(snd(snd(bounds a)) == fst (snd(bounds a))) = listArray (((k+1),k), (n,n)) (elems om)
+        |(aumentada a) == False = listArray (((k+1),k), (n,n)) (elems om)
         | otherwise = listArray (((k+1),k), ((n-1),n)) (elems om)
                  where n = snd(snd(bounds a))
+
+aumentada :: Matriz -> Bool
+aumentada a 
+          | (snd(snd(bounds a)) == fst (snd(bounds a))) = False
+          | otherwise = True
 
 --m4au = leerMatrizAu 4 [2,-3,10,-7,20, 3,12,-16,16,30 ,14,-18,40,-7, 25 ,16,-8,-50,6,-18]
