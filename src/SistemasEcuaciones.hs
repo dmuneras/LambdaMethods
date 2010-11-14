@@ -54,24 +54,26 @@ matrizEGaussTotal :: Matriz -> Integer -> Matriz
 matrizEGaussTotal a n = etapakTotal a n (n-1)
  
 pivoteoTotal :: Matriz -> Integer -> Matriz 
-pivoteoTotal om i = pivoteoParcial (cambioColumnas om i (snd(fst(buscarMayorTotal om)))) i
+pivoteoTotal om i = cambioFilas (cambioColumnas om i (snd(fst(buscarMayorTotal om i)))) i f 
+                    where f = fst(fst(buscarMayorTotal om i)) 
 
-buscarMayorTotal :: Matriz -> ((Integer,Integer), Double)
-buscarMayorTotal m 
+buscarMayorTotal :: Matriz -> Integer -> ((Integer,Integer), Double)
+buscarMayorTotal m c
                  | snd(snd(bounds m)) == n = head(filter (\x -> (snd x == (mayor m))) (assocs m))
-                 | otherwise = head(filter (\x -> (snd x == (mayor a))) (assocs a))
+                 | otherwise = head(filter (\x -> (snd x == (mayor2 (f (assocs a))))) (f (assocs a)))
                                where a = m // [((i,(n+1)),0)|i <- [1..n]]
                                      n = fst(snd(bounds m))
+                                     f l = filter (\x -> fst(fst(x)) >= c) l
 
 
 {-Funcion que calcula la matriz 'a' en la etapa pasada como parametro aplicando eliminacion gaussiana con pivoteo total-}
 etapakTotal :: Matriz -> Integer -> Integer -> Matriz
 etapakTotal a n k
               | (k == 1) = actualizar ap (indOper ap (submatriz (operm ap 1) (n-1)) 1)
-              | (k > 1) = actualizar anterior (indOper anterior (submatriz (operm anterior k) (n-k) )k )
+              | (k > 1) = actualizar ant (indOper ant (submatriz (operm ant k) (n-k) )k )
               | (otherwise) = error "Fuera de rango, valor negativo"
               where ap = pivoteoTotal a k
-                    anterior = (etapakParcial ap n (k-1))
+                    ant = pivoteoTotal (etapakTotal a n (k-1)) k
 {- PIVOTEO PARCIAL-}
 
 {-Funcion que entrega la matriz 'a' con la eliminacion gaussiana con pivoteo parcial aplicada en la etapa k (ultima)
