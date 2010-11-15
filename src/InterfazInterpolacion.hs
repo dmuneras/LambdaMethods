@@ -20,13 +20,13 @@ interpolacion =  do
                    sali <- hBoxNew False 5
                    tableAttachDefaults table content 0 1 0 1
 
-                   labelx <- labelNew  (Just "Ingrese los valores de las x separados por espacios")
+                   labelx <- labelNew  (Just "Ingrese los valores de x separados por espacios")
                    puntosx <- entryNew
                    boxPackStart datosx labelx PackNatural 5
                    boxPackStart datosx puntosx PackNatural 5
                    boxPackStart content datosx PackNatural 5
 
-                   labely <- labelNew  (Just "Ingrese los valores de los f(x) separados por espacios")             
+                   labely <- labelNew  (Just "Ingrese los valores de  f(x) separados por espacios")             
                    puntosy <- entryNew
                    boxPackStart datosy labely  PackNatural 5
                    boxPackStart datosy puntosy PackNatural 5
@@ -54,7 +54,7 @@ interpolacion =  do
                    boxPackStart content eval  PackNatural 0
                    graficar <- buttonNewWithLabel "Graficar"
                    boxPackStart content graficar  PackNatural 0
-                   ayuda <- buttonNewWithLabel "Necesitas ayuda?"
+                   ayuda <- buttonNewWithLabel "¿Necesitas ayuda?"
                    boxPackStart content ayuda  PackNatural 0
 
                    {-NEWTON-}

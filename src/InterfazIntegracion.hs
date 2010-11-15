@@ -145,7 +145,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           bsg <- entryNew 
                           boxPackStart bbsg bsg PackNatural 0
                           
-                          labelnp <- labelNew (Just "Numero de particiones")
+                          labelnp <- labelNew (Just "Número de particiones")
                           miscSetAlignment labelnp 0 0
                           boxPackStart bnsg labelnp PackNatural 0
                           nsg <- entryNew 
@@ -215,13 +215,13 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           tolti <- entryNew 
                           boxPackStart btolti tolti PackNatural 0
 
-                          labelns <- labelNew (Just "Numero de particiones")
+                          labelns <- labelNew (Just "Número de particiones")
                           miscSetAlignment labelns 0 0
                           boxPackStart bnti labelns PackNatural 0
                           nti <- entryNew 
                           boxPackStart bnti nti PackNatural 0
 
-                          labelis <- labelNew (Just "Numero de iteraciones")
+                          labelis <- labelNew (Just "Número de iteraciones")
                           miscSetAlignment labelis 0 0
                           boxPackStart biti labelis PackNatural 0
                           iti <- entryNew 
@@ -264,13 +264,13 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           tolsi <- entryNew
                           boxPackStart btolsi tolsi PackNatural 0
 
-                          labelnrm <- labelNew (Just "Numero de particiones")
+                          labelnrm <- labelNew (Just "Número de particiones")
                           miscSetAlignment labelnrm 0 0
                           boxPackStart bnsi labelnrm PackNatural 0
                           nsi <- entryNew
                           boxPackStart bnsi nsi PackNatural 0
 
-                          labelirm <- labelNew (Just "Numero de iteraciones")
+                          labelirm <- labelNew (Just "Número de iteraciones")
                           miscSetAlignment labelirm 0 0
                           boxPackStart bisi labelirm PackNatural 0
                           insi <- entryNew

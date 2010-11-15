@@ -14,6 +14,9 @@ leerMatrizAu n elem = listArray ((1,1),(n,n+1)) elem
 leerB :: Integer -> [Double] -> Matriz
 leerB n elem = listArray ((1,1),(n,1)) elem
 
+leerXo :: Integer -> [Double] -> [(Integer,Double)]
+leerXo n elem = assocs(listArray (1,n) elem)
+
 {-FUNCIONES AUXILIARES PARA PIVOTEOS -}
 mayor2 :: [((Integer,Integer),Double)] -> Double
 mayor2 l = mayor' (map (\x-> snd x)l)

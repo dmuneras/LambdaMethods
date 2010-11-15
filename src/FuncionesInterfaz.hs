@@ -4,12 +4,15 @@ import Semantica
 import GramaticaConcreta
 import GramaticaAbstracta
 import EcuacionesNoLineales
-import GraficosFunciones
+import SistemasEcuaciones
+import FuncionesAuxiliaresSE
 import UU.Parsing
 import Graphics.UI.Gtk
 import Prelude
 import Control.Exception
 import Foreign
+import Data.Array
+import Data.List
 
 process ::(EntryClass e) => String -> String -> String -> String -> String -> String -> e -> IO ()
 process f a b tol i p e  
@@ -164,7 +167,13 @@ ayudaENL =  do
      mainGUI
       
 
-   
+matrizToString :: Matriz -> Integer -> String 
+matrizToString au n
+               | n == 1 = show(map (\x -> snd x) (darFila au 1))
+               | otherwise = (matrizToString au (n-1)) ++ show(map (\x-> snd x)(darFila au n))
+
+
+                             
  
   
 
