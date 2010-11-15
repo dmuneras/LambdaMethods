@@ -29,7 +29,7 @@ coefB fx x n fn i
                | i /= j =  ((ff j (i-1)) - (ff (j+1) i))/((x !! j) - (x !! i))
                | i == j = fx !! i
 
---Funcion que convierte la lista de doubles en una lista de Funciones Constantes
+ --Funcion que convierte la lista de doubles en una lista de Funciones Constantes
 makeCons :: [Double] -> [Func]
 makeCons [] = []
 makeCons (b:bs) = [FPar (FConst b)] ++ makeCons bs
@@ -113,13 +113,16 @@ Santiago Rodriguez y Carolina Campillo en la practica del semestre 2010-1.
 -}
 
 --Funcion que halla la funcion por tramos de trazadores lineales dados unos puntos x y sus respectivos fx
+spLinEcuaciones :: [Double] -> [Double] -> [String]
 spLinEcuaciones x fx = ecsLin x fx n
                        where n = length x -1
 
 --Funcion que dados unos puntos x, fx, y un valor a interpolar busca el tramo al que pertenece el valor y evalua la ecuacion
+spLinEvaluado :: [Double] -> [Double] -> Double -> Func
 spLinEvaluado x fx v = eval (regLin x fx (srchValue x v)) ('x',FConst v)
 
 --Funcion que devuelve una lista con las ecuaciones lineales para cada tramo de la lista de puntos
+ecsLin :: [Double] -> [Double] -> Int -> [String]
 ecsLin x fx i
        | (i == 1) = [(show (regLin x fx i)) ++ "para " ++ show (x!!(i-1)) ++ " <= x <= " ++ show (x!!i)]
        | (i < n) = ant ++ [(show (regLin x fx i)) ++ "para " ++ show (x!!(i-1)) ++ " <= x <= " ++ show (x!!i)]
@@ -127,6 +130,7 @@ ecsLin x fx i
              ant = ecsLin x fx (i-1)
 
 --Funcion que hace la regresion lineal para un tramo i. Basada en la practica referenciada
+regLin :: [Double] -> [Double] -> Int -> Func
 regLin x fx i = FSum (FConst (fst(ifx))) (FMult (FPar (FConst m)) (FPar (FRes (FVar 'x') (FConst (fst(ix))))))
        where m = (fst(ifx) - snd(ifx))/(fst(ix)-snd(ix))
              ix = fst(par)
@@ -134,6 +138,7 @@ regLin x fx i = FSum (FConst (fst(ifx))) (FMult (FPar (FConst m)) (FPar (FRes (F
              par = srchIndex x i
 
 --Funcion que busca el indice del tramo al que pertenece una ecuacion. Basada en la practica referenciada
+srchIndex :: [Double] -> Int -> ((Double,Double),Int)
 srchIndex x i 
           | n1 /= 0 = ((last(fst(mitd)),head(snd(mitd))),n)
           | otherwise = ((head(snd(mitd)),(snd(mitd)!!1)),n)
@@ -142,6 +147,7 @@ srchIndex x i
                 n1 = length(fst(mitd))
 
 --Funcion que dado un valor de x y una lista de puntos de x, busca a que tramo pertenece. Basada en la practica referenciada
+srchValue :: [Double] -> Double -> Int
 srchValue x v = if (n1 == 0) then (n1+1) else (n1)
                 where n1 = length (fst mitd)
                       mitd = break (>=v) x

@@ -23,6 +23,7 @@ sust (FTan a) s@(var, f)   = FTan (sust a s)
 sust (FSec a) s@(var, f)   = FSec (sust a s)
 sust (FCsc a) s@(var, f)   = FCsc (sust a s)
 sust (FCot a) s@(var, f)   = FCot (sust a s)
+sust (FPar a) s@(var, f)   = sust a s 
 
 {-Funcion que determina si una funcion es constante          
 -}

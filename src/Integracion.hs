@@ -21,6 +21,22 @@ trapecioGen f a b n = let sum = foldl g (FConst 0) [1..(n-1)]
                                 fx0 = eval f ('x',a)
                                 fxn = eval f ('x',b)
 
+--Funcion que calcula la integral definida de una funcion por medio del metodo de Simpson Iterativo dado un numero de particiones minimo y una tolerancia. Esta funcion valida los datos de entrada y ordena llamar al ciclo principal
+trapecioIter :: Func -> Func -> Func -> Double -> Func -> Integer -> String -> String
+trapecioIter  f a b n tol iterMax typErr = if (even (truncate n)) then (trapecioIter' f a b n i0 e tol (iterMax-1) typErr)
+                                           else (error "Numero de particiones impar")
+                                               where i0 = trapecioSen f a b
+                                                     e  = FSum tol (FConst 1)
+
+--Funcion que ejecuta el metodo de Simpson Iterativo
+trapecioIter' :: Func -> Func -> Func -> Double -> Func -> Func -> Func -> Integer -> String -> String
+trapecioIter' f a b n i0 e tol iterMax typErr
+              | (e > tol && iterMax > 0) = trapecioIter' f a b (n*2) i1 err tol (iterMax-1) typErr
+              | (e <= tol) = "La integral de "++(show f)++" en el intervalo ["++(show a)++","++(show b)++"] es "++(show i0)++" con un error igual a "++(show e)
+              | (otherwise) = "Se sobrepasaron las iteraciones"
+              where i1 = trapecioGen f a b n
+                    err = error' typErr i1 i0
+
 --Funcion que halla la integral definida de una funcion por medio del metodo de Simpson 1/3 Sencillo
 simpson13Sen :: Func -> Func -> Func -> Func
 simpson13Sen f a b = reduccion (FMult (FDiv h (FConst 3)) (foldl1 (FSum) [fx0,(FMult (FConst 4) fxm),fxn]))
@@ -60,7 +76,6 @@ simpson13Iter  f a b n tol iterMax typErr = if (even (truncate n)) then (simpson
                                             else (error "Numero de particiones impar")
                                             where i0 = simpson13Sen f a b
                                                   e  = FSum tol (FConst 1)
-
 
 --Funcion que ejecuta el metodo de Simpson Iterativo
 simpson13Iter' :: Func -> Func -> Func -> Double -> Func -> Func -> Func -> Integer -> String -> String
