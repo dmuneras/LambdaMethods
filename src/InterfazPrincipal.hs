@@ -10,9 +10,9 @@ main :: IO ()
 main= do
      initGUI
      window <- windowNew
-     set window [windowTitle := "LambdaMethods", windowDefaultWidth := 400,
-                 windowDefaultHeight := 800,  windowDecorated := True]
-     
+     set window [windowTitle := "LambdaMethods", windowDefaultWidth := 300,
+                 windowDefaultHeight := 700,  windowDecorated := True]
+     windowSetIconFromFile window "lambda"
      box <- vBoxNew False 0 
      ntbk <- notebookNew 
      containerAdd window box

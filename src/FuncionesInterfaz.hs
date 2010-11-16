@@ -167,14 +167,17 @@ ayudaENL =  do
      mainGUI
       
 
-matrizToString :: Matriz -> Integer -> String 
-matrizToString au n
-               | n == 1 = show(map (\x -> snd x) (darFila au 1))
-               | otherwise = (matrizToString au (n-1)) ++ show(map (\x-> snd x)(darFila au n))
+mtos' :: Matriz -> Integer -> String 
+mtos' au n
+    | n == 1 = show(map (\x -> snd x) (darFila au 1)) 
+    | otherwise = (mtos' au (n-1)) ++ "\n"++ show(map (\x-> snd x)(darFila au n))  
 
 
-                             
- 
+mtos :: Matriz -> Integer -> IO()
+mtos au n= do
+             putStr ((mtos' au n) ++ "\n")
+            
+
   
 
  

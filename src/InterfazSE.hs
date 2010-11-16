@@ -14,40 +14,54 @@ import Foreign
 
 sistemasEcuaciones :: IO Table
 sistemasEcuaciones= do
-                      table <- tableNew 3 1 False
-                      content <- vBoxNew False 5
-                      sistem <- vBoxNew False 5 
-                      grafMatriz <- textViewNew 
-                      tableAttachDefaults table grafMatriz 0 1 0 1
-                      tableAttachDefaults table content 0 1 1 2
+                      table <- tableNew 4 1 False
+                      content <- vBoxNew False 2
+                      sistem <- vBoxNew False 4
+                      grafMatriz <- textViewNew
+                      tableAttachDefaults table content 0 1 0 1
                       values <- entryNew
                       valuesb <- entryNew
-                      tamaño <- entryNew
-                      salida <- entryNew
                       labelv <- labelNew (Just "Ingrese matriz aumentada para Eliminaciones Gaussianas o matriz de coeficientes para Métodos Iterativos (Por filas y elementos separados por espacios")
                       labelb <- labelNew (Just "Ingrese el vector de términos independientes (Elementos separados por espacios)")
-                      labelta <- labelNew (Just "Tamaño del sistema")
-                      labels <- labelNew (Just "Resultado")
+                      labels <- labelNew (Just "Valores de las incognitas")
                       eval <- buttonNewWithLabel "Evaluar"
-                      boxPackStart content sistem  PackNatural 0
-                      boxPackStart sistem  labelv  PackNatural 0
-                      boxPackStart sistem  values  PackNatural 0
-                      boxPackStart sistem  labelb  PackNatural 0
-                      boxPackStart sistem  valuesb PackNatural 0
-                      boxPackStart sistem  labelta PackNatural 0
-                      boxPackStart sistem  tamaño  PackNatural 0
-                      boxPackStart sistem  labels  PackNatural 0
-                      boxPackStart sistem  salida  PackNatural 0
-                      boxPackStart content eval  PackNatural 0
-                      
+                      boxPackStart content sistem PackNatural 0
+                      boxPackStart sistem labelv PackNatural 0
+                      boxPackStart sistem values PackNatural 0
+                      boxPackStart sistem labelb PackNatural 0
+                      boxPackStart sistem valuesb PackNatural 0
+
                       {-MATRIZ RESULTANTE-}
+                      tableAttachDefaults table grafMatriz 0 1 1 2
                       textViewSetEditable grafMatriz False
                       buffer <- textViewGetBuffer grafMatriz
+                      labelmm <- labelNew (Just "Matriz resultante")
+                      labelm <- labelNew (Just "Resultados")
+                      containerAdd sistem labelm
+                      containerAdd sistem labelmm
+                      
+                      {-RESULTADOS-}
+                      resu <- vBoxNew False 0
+                      salida <- entryNew
+                      tableAttachDefaults table resu 0 1 2 3
+                      boxPackStart resu labels PackNatural 0
+                      boxPackStart resu salida PackNatural 0
+                      boxPackStart resu eval PackNatural 0
+                      
+                      
                       {-METODOS DIRECTOS-}
-
+                      directosp <- vBoxNew False 5
                       directos <- hBoxNew False 5
+                      tama <- hBoxNew False 0
+                      tableAttachDefaults table directosp 0 1 3 4
+                      tamaño <- entryNew
                       labeld <- labelNew (Just "Métodos directos")
-                      containerAdd content labeld
+                      labeltama <- labelNew (Just "Tamaño")
+                      containerAdd tama labeltama
+                      containerAdd tama tamaño
+                      containerAdd directosp labeld
+                      containerAdd directos tama
+                      containerAdd directosp directos
 
                       {-ELIMINACION GAUSSIANA SIMPLE-}
                       gsim <- hBoxNew False 10
@@ -72,7 +86,7 @@ sistemasEcuaciones= do
                       radio3 <- radioButtonNewWithLabelFromWidget radio2 "Eliminación con Pivoteo Total"
                       boxPackStart optiont radio3 PackNatural 5
                       boxPackStart gtotal optiont PackNatural 0
-                      containerAdd content directos
+                 
                     
                       {-METODOS ITERATIVOS-}
                      
@@ -81,13 +95,13 @@ sistemasEcuaciones= do
                       labeliter <- labelNew (Just "Métodos iterativos")
                       labelen <- labelNew (Just "Ingrese los respectivos valores y luego seleccion el método a usar")
                       containerAdd iterativo labeliter
-                      tableAttachDefaults table iterativo 0 1 2 3
+                      tableAttachDefaults table iterativo 0 1 4 5
                     
-                      bxoj <- vBoxNew  False 5
-                      bnj <- vBoxNew  False 5
-                      blaj <- vBoxNew  False 5
-                      btolj <- vBoxNew  False 5
-                      bij <- vBoxNew  False 5
+                      bxoj <- vBoxNew False 5
+                      bnj <- vBoxNew False 5
+                      blaj <- vBoxNew False 5
+                      btolj <- vBoxNew False 5
+                      bij <- vBoxNew False 5
                       --boxPackStart viterativo labelen PackNatural 0
                       boxPackStart viterativo bxoj PackNatural 0
                       boxPackStart viterativo bnj PackNatural 0
@@ -126,7 +140,7 @@ sistemasEcuaciones= do
                       boxPackStart bij ij PackNatural 0
                      
                       {-OPCIONES ITERATIVOS-}
-                      optioniter <- hBoxNew False 5
+                      optioniter <- vBoxNew False 5
                       jaco <- hBoxNew False 5
                       optionj <- vBoxNew False 5
                       radio4 <- radioButtonNewWithLabelFromWidget radio3 "Jacobi"
@@ -138,41 +152,42 @@ sistemasEcuaciones= do
                       options <- vBoxNew False 5
                       radio5 <- radioButtonNewWithLabelFromWidget radio4 "Gauss Seidel"
                       boxPackStart options radio5 PackNatural 5
-                      boxPackStart seidel  options PackNatural 0
+                      boxPackStart seidel options PackNatural 0
                       
 
                       containerAdd optioniter jaco
                       containerAdd optioniter seidel
+                      containerAdd viterativo optioniter
                       containerAdd iterativo viterativo
-                      containerAdd iterativo optioniter 
                      
                       onClicked eval $ do
                         s <- get values entryText
                         n <- get tamaño entryText
                         au <- parseIO pListDouble (funScanTxt(s))
                         if (unsafePerformIO(toggleButtonGetActive radio1))
-                         then do 
+                         then do
                                let result = eGaussSim (leerMatrizAu (read n) au) (read n)
                                set salida [entryText := show(result)]
-                               let mat = matrizToString(matrizEGaussSim  (leerMatrizAu (read n) au) (read n)) (read n)
+                               let mat = mtos'(matrizEGaussSim (leerMatrizAu (read n) au) (read n)) (read n)
                                textBufferSetText buffer (show mat)
-                         else 
+                         else
                             if (unsafePerformIO(toggleButtonGetActive radio2))
-                             then do 
+                             then do
                                    let result = eGaussPParcial (leerMatrizAu (read n) au) (read n)
                                    set salida [entryText := show(result)]
-                                   let mat = matrizToString(matrizEGaussParcial (leerMatrizAu (read n) au) (read n)) (read n)
+                                   let mat = mtos'(matrizEGaussParcial (leerMatrizAu (read n) au) (read n)) (read n)
                                    textBufferSetText buffer (show mat)
-                             else 
+                             else
                                 if (unsafePerformIO(toggleButtonGetActive radio3))
-                                 then do 
+                                 then do
                                        let result = eGaussPTotal (leerMatrizAu (read n) au) (read n)
                                        set salida [entryText := show(result)]
-                                       let mat = matrizToString(matrizEGaussTotal(leerMatrizAu (read n) au) (read n)) (read n)
+                                       let mat = mtos'(matrizEGaussTotal(leerMatrizAu (read n) au) (read n)) (read n)
                                        textBufferSetText buffer (show mat)
+                                       
                                  else do
                                         sxo <- get xoj entryText
-                                        sb <- get  valuesb entryText
+                                        sb <- get valuesb entryText
                                         sla <- get laj entryText
                                         stol <- get tolj entryText
                                         i <- get ij entryText
@@ -182,11 +197,11 @@ sistemasEcuaciones= do
                                         la <- parseIO pDouble (funScanTxt sla)
                                         tol <- parseIO pDouble (funScanTxt stol)
                                         if (unsafePerformIO(toggleButtonGetActive radio4))
-                                         then do 
-                                                let result = jacobi (leerMatriz (read ni) au)  (leerXo (read ni) xo) (leerB (read ni) b) (read ni) la tol (read i) 
-                                                set salida [entryText :=  (show result)]
+                                         then do
+                                                let result = jacobi (leerMatriz (read ni) au) (leerXo (read ni) xo) (leerB (read ni) b) (read ni) la tol (read i)
+                                                set salida [entryText := (show result)]
                                          else do
-                                                let result = gaussSeidel (leerMatriz (read ni) au)  (leerXo (read ni) xo) (leerB (read ni) b) (read ni) la tol (read i) 
+                                                let result = gaussSeidel (leerMatriz (read ni) au) (leerXo (read ni) xo) (leerB (read ni) b) (read ni) la tol (read i)
                                                 set salida [entryText := (show result)]
                                         
                       return table

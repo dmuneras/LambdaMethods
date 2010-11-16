@@ -16,12 +16,12 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           
                           labelent <- labelNew (Just "Ingrese la función")
                           entrada <- entryNew
-                          boxPackStart content labelent PackNatural 5
-                          boxPackStart content  entrada PackNatural 5
+                          boxPackStart content labelent PackNatural 0
+                          boxPackStart content  entrada PackNatural 0
                           labelsal <- labelNew (Just "Resultado:")
                           salida  <- entryNew
-                          boxPackStart content labelsal PackNatural 5
-                          boxPackStart content salida PackNatural 5
+                          boxPackStart content labelsal PackNatural 0
+                          boxPackStart content salida PackNatural 0
                           eval <- buttonNewWithLabel "Evaluar"
                           boxPackStart content eval  PackNatural 0
                           graficar <- buttonNewWithLabel "Graficar"
@@ -40,9 +40,9 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           radio2 <- radioButtonNewWithLabel "Busqueda incremental "
                           boxPackStart option radio2 PackNatural 0
                           boxPackStart busqdInc option PackNatural 5
-                          boxPackStart busqdInc ba PackNatural 20
-                          boxPackStart busqdInc bb PackNatural 20
-                          boxPackStart busqdInc bi PackNatural 20
+                          boxPackStart busqdInc ba PackNatural 10
+                          boxPackStart busqdInc bb PackNatural 10
+                          boxPackStart busqdInc bi PackNatural 10
   
    
                           labela <- labelNew (Just " valor inicial  ")
@@ -66,7 +66,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           {-BISECCION-}
   
                           biseccion <- hBoxNew False 0 
-                          optionb <- vBoxNew False 20
+                          optionb <- vBoxNew False 5
                           bab <- vBoxNew False 0
                           bbb <- vBoxNew False 0 
                           btolb<- vBoxNew False 0
@@ -75,11 +75,11 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           tableAttachDefaults table biseccion 0 1 3 4
                           radio3 <- radioButtonNewWithLabelFromWidget radio2 "Biseccion "
                           boxPackStart biseccion optionb PackNatural 5
-                          boxPackStart optionb radio3 PackNatural 22
-                          boxPackStart biseccion bab PackNatural 22
-                          boxPackStart biseccion bbb PackNatural 22
-                          boxPackStart biseccion btolb PackNatural 22
-                          boxPackStart biseccion bib PackNatural 22
+                          boxPackStart optionb radio3 PackNatural 10
+                          boxPackStart biseccion bab PackNatural 10
+                          boxPackStart biseccion bbb PackNatural 10
+                          boxPackStart biseccion btolb PackNatural 10
+                          boxPackStart biseccion bib PackNatural 10
   
                           labelab     <- labelNew (Just "valor de a ")
                           miscSetAlignment labelab 0 0
@@ -117,11 +117,11 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           tableAttachDefaults table reglaFalsa 0 1 4 5
                           radio4 <- radioButtonNewWithLabelFromWidget radio3 "Regla falsa "
                           boxPackStart reglaFalsa optionr PackNatural 5
-                          boxPackStart optionr radio4 PackNatural 22
-                          boxPackStart reglaFalsa bar PackNatural 22
-                          boxPackStart reglaFalsa bbr PackNatural 22
-                          boxPackStart reglaFalsa btolr PackNatural 22
-                          boxPackStart reglaFalsa bir PackNatural 22
+                          boxPackStart optionr radio4 PackNatural 10
+                          boxPackStart reglaFalsa bar PackNatural 10
+                          boxPackStart reglaFalsa bbr PackNatural 10
+                          boxPackStart reglaFalsa btolr PackNatural 10
+                          boxPackStart reglaFalsa bir PackNatural 10
 
   
                           labelar <- labelNew (Just "valor de a ")
@@ -159,11 +159,11 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           tableAttachDefaults table puntoFijo 0 1 5 6
                           radio5 <- radioButtonNewWithLabelFromWidget radio4 "Punto Fijo "
                           boxPackStart puntoFijo optionp PackNatural 5
-                          boxPackStart optionp radio5 PackNatural 22
-                          boxPackStart puntoFijo bap PackNatural 22
-                          boxPackStart puntoFijo bbp PackNatural 22
-                          boxPackStart puntoFijo btolp PackNatural 22
-                          boxPackStart puntoFijo bip PackNatural 22
+                          boxPackStart optionp radio5 PackNatural 10
+                          boxPackStart puntoFijo bap PackNatural 10
+                          boxPackStart puntoFijo bbp PackNatural 10
+                          boxPackStart puntoFijo btolp PackNatural 10
+                          boxPackStart puntoFijo bip PackNatural 10
   
                           labelap <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelap 0 0
@@ -201,11 +201,11 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           tableAttachDefaults table newton 0 1 6 7 
                           radio6 <- radioButtonNewWithLabelFromWidget radio5 "Newton "
                           boxPackStart newton optionn PackNatural 5
-                          boxPackStart optionn radio6 PackNatural 22
-                          boxPackStart newton ban PackNatural 22
-                          boxPackStart newton bbn PackNatural 22
-                          boxPackStart newton btoln PackNatural 22
-                          boxPackStart newton bin PackNatural 22
+                          boxPackStart optionn radio6 PackNatural 10
+                          boxPackStart newton ban PackNatural 10
+                          boxPackStart newton bbn PackNatural 10
+                          boxPackStart newton btoln PackNatural 10
+                          boxPackStart newton bin PackNatural 10
   
                           labelan <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelan 0 0
@@ -242,11 +242,11 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           tableAttachDefaults table secante 0 1 7 8 
                           radio7 <- radioButtonNewWithLabelFromWidget radio6 "Secante "
                           boxPackStart secante options PackNatural 5
-                          boxPackStart options radio7 PackNatural 22
-                          boxPackStart secante bas PackNatural 22
-                          boxPackStart secante bbs PackNatural 22
-                          boxPackStart secante btols PackNatural 22
-                          boxPackStart secante bis PackNatural 22
+                          boxPackStart options radio7 PackNatural 10
+                          boxPackStart secante bas PackNatural 10
+                          boxPackStart secante bbs PackNatural 10
+                          boxPackStart secante btols PackNatural 10
+                          boxPackStart secante bis PackNatural 10
   
                           labelas <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelas 0 0
@@ -283,9 +283,9 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           radio8 <- radioButtonNewWithLabelFromWidget radio7 "Raices Multiples "
                           boxPackStart raices optionrm PackNatural 0
                           boxPackStart optionrm radio8 PackNatural 5
-                          boxPackStart raices barm PackNatural 22
-                          boxPackStart raices btolrm PackNatural 22
-                          boxPackStart raices birm PackNatural 22
+                          boxPackStart raices barm PackNatural 10
+                          boxPackStart raices btolrm PackNatural 10
+                          boxPackStart raices birm PackNatural 10
   
                           labelarm <- labelNew (Just "valor inicial ")
                           miscSetAlignment labelarm 0 0

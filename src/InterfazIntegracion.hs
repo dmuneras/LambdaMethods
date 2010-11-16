@@ -17,12 +17,12 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           
                           labelent <- labelNew (Just "Ingrese la función")
                           entrada <- entryNew
-                          boxPackStart content labelent PackNatural 5
-                          boxPackStart content  entrada PackNatural 5
+                          boxPackStart content labelent PackNatural 0
+                          boxPackStart content  entrada PackNatural 0
                           labelsal <- labelNew (Just "Resultado")
                           salida  <- entryNew
-                          boxPackStart content labelsal PackNatural 5
-                          boxPackStart content salida PackNatural 5
+                          boxPackStart content labelsal PackNatural 0
+                          boxPackStart content salida PackNatural 0
                           eval <- buttonNewWithLabel "Evaluar"
                           boxPackStart content eval  PackNatural 0
                           ayuda <- buttonNewWithLabel "¿Necesitas ayuda?"
@@ -30,7 +30,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           
                           {-TRAPECIO SENCILLO-}
 
-                          trapecioSenc <- hBoxNew False 25
+                          trapecioSenc <- hBoxNew False 0
                           option <- vBoxNew False 0
                           tsa <- vBoxNew False 0
                           tsb <- vBoxNew False 0 
@@ -119,7 +119,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           boxPackStart bbss bss PackNatural 0
                           
                           {-SIMPSON 1/3 GENERALIZADO-}
-                          simpson13g <- hBoxNew False 6 
+                          simpson13g <- hBoxNew False 0
                           optionp <- vBoxNew False 0
                           basg <- vBoxNew False 0
                           bbsg <- vBoxNew False 0 
@@ -153,7 +153,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
 
                           {-SIMPSON 3/8 SENCILLO-}
                           
-                          simpson38s <- hBoxNew False 10
+                          simpson38s <- hBoxNew False 0
                           optionn <- vBoxNew False 0
                           basos <- vBoxNew False 0
                           bbsos <- vBoxNew False 0 
@@ -179,7 +179,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
    
                        
                           {-TRAPECIO ITERATIVO-} 
-                          traIter <- hBoxNew False 10 
+                          traIter <- hBoxNew False 0
                           options <- vBoxNew False 0
                           bati <- vBoxNew False 0
                           bbti <- vBoxNew False 0 
@@ -228,7 +228,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           boxPackStart biti iti PackNatural 0
                           
                           {-SIMPSON 1/3 ITERATIVO-}
-                          simpson13iter <- hBoxNew False 25 
+                          simpson13iter <- hBoxNew False 0 
                           optionrm <- vBoxNew False 0
                           basi <- vBoxNew False 0
                           bbsi <- vBoxNew False 0
