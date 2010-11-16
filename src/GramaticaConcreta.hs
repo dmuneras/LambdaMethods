@@ -7,7 +7,8 @@ import UU.Scanner
 import UU.Scanner.GenTokenParser
 import GramaticaAbstracta
 
-kwtxt  = ["E", "EXP", "LN", "Sen", "Cos", "Tan", "Cot", "Sec", "Csc"]
+
+kwtxt  = ["D", "E","e", "LN", "Sen", "Cos", "Tan", "Cot", "Sec", "Csc"]
 kwotxt = ["|", "+", "-", "*", "/", "^", "."]
 sctxt  = "(),"
 octxt  = "|+*-/^."
@@ -38,20 +39,16 @@ pNumReal = f <$> pIntegerSign <*> pKey "." <*> pInteger
 pDouble :: Parser Token Double
 pDouble = read <$> pIntegerSign
         <|> read  <$> pNumReal
-        <|> f  <$> pIntegerSign <*> pKey "E" <*> pIntegerSign
-        <|> f  <$> pNumReal <*> pKey "E" <*> pIntegerSign
-        <|> g  <$> pKey "E" <*> pIntegerSign
-        <|> h  <$> pKey "-E" <*> pIntegerSign
-	where f a e ex = read (a ++ "e" ++ ex)
-              g e ex = read ("1e" ++ ex)
-              h e ex = read ("-1e" ++ ex)
-
-{-Parser que reconoce una lista de doubles
--}
-pListDouble :: Parser Token [Double]
-pListDouble = pList pDouble
-                  				
-{-Parser que reconoce un numero y lo convierte a funcion constante
+      --   <|> f  <$> pIntegerSign <*> pKey "e" <*> pIntegerSign
+    --     <|> f  <$> pNumReal <*> pKey "e" <*> pIntegerSign
+    --     <|> g  <$> pKey "e" <*> pIntegerSign
+    --     <|> h  <$> pKey "-e" <*> pIntegerSign
+    -- where f a e ex = read (a ++ "e" ++ ex)
+    --       g e ex = read ("1e" ++ ex)
+    --       h e ex = read ("-1e" ++ ex)
+	                  
+	      				
+{-Parser que reconoce un numero entero y lo convierte a funcion constante
 -}
 pConst :: Parser Token Func
 pConst = FConst <$> pDouble 
@@ -70,10 +67,7 @@ pFactor = pConst
       <|> pFunExpon
       <|> pFunLn
       <|> pTrig
-      <|> (pParens pFactor)
-
--- pFactorP :: Parser Token Func
--- pFactorP = (pParens pFactor)
+      <|> (pParens pFunc)
 
 {-Parser que reconoce los operadores de multiplicacion y division
 -}    
@@ -102,42 +96,42 @@ pFunExpression = pChainl pOperSum pTerm
 {-Parser que reconoce la funcion exponencial
 -}
 pFunExpon :: Parser Token Func
-pFunExpon = FExp <$>(pKey "EXP" *> (pParens pFunc))
+pFunExpon = FExp <$>(pKey "E" *> pFunc)
 
 {-Parser que reconoce la funcion logaritmo natural
 -}
 pFunLn :: Parser Token Func
-pFunLn = FLn <$> (pKey "LN(" *> (pParens pFunc))
+pFunLn = FLn <$> (pKey "LN" *> pFunc)
 
 {-Parser que reconoce la funcion Seno
 -}
 pSen :: Parser Token Func
-pSen = FSen  <$> (pKey "Sen" *> (pParens pFunc))
+pSen = FSen  <$> (pKey "Sen" *> pFunc)
 
 {-Parser que reconoce la funcion Coseno
 -}	
 pCos :: Parser Token Func
-pCos = FCos  <$> (pKey "Cos" *> (pParens pFunc))
+pCos = FCos  <$> (pKey "Cos" *> pFunc)
 
 {-Parser que reconoce la funcion Tangente
 -}
 pTan :: Parser Token Func
-pTan = FTan  <$> (pKey "Tan" *> (pParens pFunc))
+pTan = FTan  <$> (pKey "Tan" *> pFunc)
 
 {-Parser que reconoce la funcion Secante
 -}
 pSec :: Parser Token Func
-pSec = FSec <$> (pKey "Sec" *>  (pParens pFunc))
+pSec = FSec <$> (pKey "Sec" *> pFunc)
 
 {-Parser que reconoce la funcion Cosecante
 -}
 pCsc :: Parser Token Func
-pCsc = FCsc <$> (pKey "Csc" *>  (pParens pFunc))
+pCsc = FCsc <$> (pKey "Csc" *> pFunc)
 
 {-Parser que reconoce la funcion Cotangente
 -}
 pCot :: Parser Token Func
-pCot = FCot <$> (pKey "Cot" *>  (pParens pFunc))
+pCot = FCot <$> (pKey "Cot" *> pFunc)
 
 {-Parser que reconoce una funcion trigonometrica
 -}
@@ -149,8 +143,7 @@ pTrig = pSen <|> pCos <|> pTan <|> pCot <|> pSec <|> pCsc
 pFunc :: Parser Token Func
 pFunc = pConst <|> pVar <|> pFunExpression <|> pFunExpon <|> pFunLn <|> pTrig
 
-{-Parser que reconoce una tupla sin parentesis
+{-Parser que reconoce una lista de doubles
 -}
-pTupla :: Parser Token (Double,Double)
-pTupla = f <$> pDouble <* pComma <*> pDouble
-         where f a b = (a,b)
+pListDouble :: Parser Token [Double]
+pListDouble = pList pDouble

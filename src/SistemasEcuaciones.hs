@@ -146,15 +146,15 @@ eGaussPTotal au n = sustReg (matrizEGaussTotal au n) n 1
 
 {-METODOS ITERATIVOS-}
 --Jacobi: Funcion que recibe los parametros iniciales y llama al ciclo prinicpal
-jacobi :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Integer -> [(Integer,Double)]
+jacobi :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Integer -> String
 jacobi a x0 b n lam tol iter = jacobi' a x0 b n lam (tol+1) tol iter
 
 --Funcion que aplica el metodo
-jacobi' :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Double -> Integer -> [(Integer,Double)]
+jacobi' :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Double -> Integer -> String
 jacobi' a x0 b n lam  e tol i
         | (e > tol && i > 0) = jacobi' a x1 b n lam err tol (i-1)
-        | (e <= tol) = x0
-        | (otherwise) = error "El metodo no converge en las iteraciones dadas"
+        | (e <= tol) = show(x0) ++ "con error " ++ show(e)
+        | (otherwise) = "El metodo no converge en las iteraciones dadas"
         where x1 = x1Jacobi a x0 b lam n n
               err = normMax x1 x0
 
@@ -170,15 +170,15 @@ x1Jacobi a x0 b lam n i
                ant = filter (\x -> fst x == i) x0
 
 --Gauss Seidel: Funcion que recibe los parametros iniciales y llama al ciclo principal
-gaussSeidel :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Integer -> [(Integer,Double)]
+gaussSeidel :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Integer -> String
 gaussSeidel a x0 b n lam tol iter = gaussSeidel' a x0 b n lam (tol+1) tol iter
 
 --Funcion que aplica el metodo
-gaussSeidel' :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Double -> Integer -> [(Integer,Double)]
+gaussSeidel' :: Matriz -> [(Integer,Double)] -> Matriz -> Integer -> Double -> Double -> Double -> Integer -> String
 gaussSeidel' a x0 b n lam e tol i
              | (e > tol && i > 0) = gaussSeidel' a x1 b n lam err tol (i-1)
-             | (e <= tol) = x0
-             | (otherwise) = error "El metodo no converge en las iteraciones dadas"
+             | (e <= tol) = show(x0) ++ "con error " ++ show(e)
+             | (otherwise) =  "El metodo no converge en las iteraciones dadas"
              where x1 = x1GaussS a x0 b lam n n
                    err = normMax x1 x0
 

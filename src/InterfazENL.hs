@@ -1,5 +1,5 @@
 module InterfazENL where
-
+import EcuacionesNoLineales
 import FuncionesInterfaz
 import GraficosFunciones
 import GramaticaConcreta
@@ -29,8 +29,16 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           ayuda <- buttonNewWithLabel "¿Necesitas ayuda?"
                           boxPackStart content ayuda  PackNatural 0
                           
-                          {-BUSQUEDAS INCREMENTALES-}
+                          {-TIPO DE ERROR-}
+                          errores <- hBoxNew False 0
+                          radio1 <- radioButtonNewWithLabel "Error Absoluto"
+                          containerAdd errores radio1
+                          radioe <- radioButtonNewWithLabelFromWidget radio1 "Error Relativo"
+                          containerAdd errores radioe
+                          containerAdd content errores
 
+                          {-BUSQUEDAS INCREMENTALES-}
+                          
                           busqdInc <- hBoxNew False 0
                           option <- vBoxNew False 0
                           ba <- vBoxNew False 0
@@ -65,21 +73,21 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
    
                           {-BISECCION-}
   
-                          biseccion <- hBoxNew False 0 
+                          biseccionb <- hBoxNew False 0 
                           optionb <- vBoxNew False 0
                           bab <- vBoxNew False 0
                           bbb <- vBoxNew False 0 
                           btolb<- vBoxNew False 0
                           bib <- vBoxNew False 0
                            
-                          tableAttachDefaults table biseccion 0 1 3 4
+                          tableAttachDefaults table biseccionb 0 1 3 4
                           radio3 <- radioButtonNewWithLabelFromWidget radio2 "Bisección"
-                          boxPackStart biseccion optionb PackNatural 10
+                          boxPackStart biseccionb optionb PackNatural 10
                           boxPackStart optionb radio3 PackNatural 12
-                          boxPackStart biseccion bab PackNatural 12
-                          boxPackStart biseccion bbb PackNatural 12
-                          boxPackStart biseccion btolb PackNatural 12
-                          boxPackStart biseccion bib PackNatural 12
+                          boxPackStart biseccionb bab PackNatural 12
+                          boxPackStart biseccionb bbb PackNatural 12
+                          boxPackStart biseccionb btolb PackNatural 12
+                          boxPackStart biseccionb bib PackNatural 12
   
                           labelab     <- labelNew (Just "Valor de a")
                           miscSetAlignment labelab 0 0
@@ -108,21 +116,21 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
 
                           {-REGLAFALSA-}
   
-                          reglaFalsa <- hBoxNew False 0
+                          reglaFalsab <- hBoxNew False 0
                           optionr <- vBoxNew False 0
                           bar <- vBoxNew False 0
                           bbr <- vBoxNew False 0 
                           btolr<- vBoxNew False 0
                           bir <- vBoxNew False 0
  
-                          tableAttachDefaults table reglaFalsa 0 1 4 5
+                          tableAttachDefaults table reglaFalsab 0 1 4 5
                           radio4 <- radioButtonNewWithLabelFromWidget radio3 "Regla Falsa"
-                          boxPackStart reglaFalsa optionr PackNatural 10
+                          boxPackStart reglaFalsab optionr PackNatural 10
                           boxPackStart optionr radio4 PackNatural 12
-                          boxPackStart reglaFalsa bar PackNatural 12
-                          boxPackStart reglaFalsa bbr PackNatural 12
-                          boxPackStart reglaFalsa btolr PackNatural 12
-                          boxPackStart reglaFalsa bir PackNatural 12
+                          boxPackStart reglaFalsab bar PackNatural 12
+                          boxPackStart reglaFalsab bbr PackNatural 12
+                          boxPackStart reglaFalsab btolr PackNatural 12
+                          boxPackStart reglaFalsab bir PackNatural 12
 
   
                           labelar <- labelNew (Just "Valor de a")
@@ -151,21 +159,21 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           
                           {-PUNTO FIJO-}
 
-                          puntoFijo <- hBoxNew False 0 
+                          bpuntoFijo <- hBoxNew False 0 
                           optionp <- vBoxNew False 0
                           bap <- vBoxNew False 0
                           bbp <- vBoxNew False 0 
                           btolp<- vBoxNew False 0
                           bip <- vBoxNew False 0
  
-                          tableAttachDefaults table puntoFijo 0 1 5 6
+                          tableAttachDefaults table bpuntoFijo 0 1 5 6
                           radio5 <- radioButtonNewWithLabelFromWidget radio4 "Punto Fijo"
-                          boxPackStart puntoFijo optionp PackNatural 10
+                          boxPackStart bpuntoFijo optionp PackNatural 10
                           boxPackStart optionp radio5 PackNatural 12
-                          boxPackStart puntoFijo bap PackNatural 12
-                          boxPackStart puntoFijo bbp PackNatural 12
-                          boxPackStart puntoFijo btolp PackNatural 12
-                          boxPackStart puntoFijo bip PackNatural 12
+                          boxPackStart bpuntoFijo bap PackNatural 12
+                          boxPackStart bpuntoFijo bbp PackNatural 12
+                          boxPackStart bpuntoFijo btolp PackNatural 12
+                          boxPackStart bpuntoFijo bip PackNatural 12
   
                           labelap <- labelNew (Just "Valor inicial")
                           miscSetAlignment labelap 0 0
@@ -193,21 +201,21 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           
                           {-NEWTON-}
                           
-                          newton <- hBoxNew False 10
+                          newtonb <- hBoxNew False 10
                           optionn <- vBoxNew False 10
                           ban <- vBoxNew False 0
                           bbn <- vBoxNew False 0 
                           btoln<- vBoxNew False 0
                           bin <- vBoxNew False 0
  
-                          tableAttachDefaults table newton 0 1 6 7 
+                          tableAttachDefaults table newtonb 0 1 6 7 
                           radio6 <- radioButtonNewWithLabelFromWidget radio5 "Newton"
-                          boxPackStart newton optionn PackNatural 10
+                          boxPackStart newtonb optionn PackNatural 10
                           boxPackStart optionn radio6 PackNatural 12
-                          boxPackStart newton ban PackNatural 12
-                          boxPackStart newton bbn PackNatural 12
-                          boxPackStart newton btoln PackNatural 12
-                          boxPackStart newton bin PackNatural 12
+                          boxPackStart newtonb ban PackNatural 12
+                          boxPackStart newtonb bbn PackNatural 12
+                          boxPackStart newtonb btoln PackNatural 12
+                          boxPackStart newtonb bin PackNatural 12
   
                           labelan <- labelNew (Just "Valor inicial")
                           miscSetAlignment labelan 0 0
@@ -235,21 +243,21 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           
                           {-SECANTE-} 
 
-                          secante <- hBoxNew False 10 
+                          secantep <- hBoxNew False 10 
                           options <- vBoxNew False 10
                           bas <- vBoxNew False 0
                           bbs <- vBoxNew False 0 
                           btols<- vBoxNew False 0
                           bis <- vBoxNew False 0
  
-                          tableAttachDefaults table secante 0 1 7 8 
+                          tableAttachDefaults table secantep 0 1 7 8 
                           radio7 <- radioButtonNewWithLabelFromWidget radio6 "Secante"
-                          boxPackStart secante options PackNatural 10
+                          boxPackStart secantep options PackNatural 10
                           boxPackStart options radio7 PackNatural 12
-                          boxPackStart secante bas PackNatural 12
-                          boxPackStart secante bbs PackNatural 12
-                          boxPackStart secante btols PackNatural 12
-                          boxPackStart secante bis PackNatural 12
+                          boxPackStart secantep bas PackNatural 12
+                          boxPackStart secantep bbs PackNatural 12
+                          boxPackStart secantep btols PackNatural 12
+                          boxPackStart secantep bis PackNatural 12
   
                           labelas <- labelNew (Just "Primer valor inicial")
                           miscSetAlignment labelas 0 0
@@ -328,58 +336,84 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           
                           onClicked eval $ do
                                 f <- get entrada entryText
+                                fun <- parseIO pFunc (funScanTxt f)
                                 if (unsafePerformIO(toggleButtonGetActive radio5))
                                  then do
-                                        ap <- get ap entryText
-                                        bp <- get bp entryText
-                                        tolp <- get tolp entryText
-                                        ip <- get ip entryText
-                                        process f ap bp tolp ip "Punto Fijo " salida
+                                        sap <- get ap entryText
+                                        sbp <- get bp entryText
+                                        stolp <- get tolp entryText
+                                        app <- parseIO pFunc (funScanTxt sap)
+                                        bpp <- parseIO pFunc (funScanTxt sbp)
+                                        tolpp <- parseIO pFunc (funScanTxt stolp)
+                                        ipp <- get ip entryText
+                                        let r = puntoFijo fun bpp app tolpp (read ipp) "abs"
+                                        set salida [entryText := show(r)]
                                  else        
                                      if (unsafePerformIO(toggleButtonGetActive radio4))
                                       then do
-                                             ar <- get ar entryText
-                                             br <- get br entryText
-                                             tolr <- get tolr entryText
+                                             sar <- get ar entryText
+                                             sbr <- get br entryText
+                                             stolr <- get tolr entryText
+                                             ar <- parseIO pFunc (funScanTxt sar)
+                                             br <- parseIO pFunc (funScanTxt sbr)
+                                             tolr <- parseIO pFunc (funScanTxt stolr)
                                              ir <- get ir entryText
-                                             process f ar br tolr ir "Regla falsa " salida
+                                             let r = reglaFalsa fun ar br tolr (read ir) "abs"
+                                             set salida [entryText := show(r)]
                                       else
                                           if (unsafePerformIO(toggleButtonGetActive radio3))
                                            then do
-                                                  ab <- get ab entryText
-                                                  bb <- get bb entryText
-                                                  tol <- get tol entryText
+                                                  sab <- get ab entryText
+                                                  sbb <- get bb entryText
+                                                  stolb <- get tol entryText
+                                                  ab <- parseIO pFunc (funScanTxt sab)
+                                                  bb <- parseIO pFunc (funScanTxt sbb)
+                                                  tolb <- parseIO pFunc (funScanTxt stolb)
                                                   ib <- get ib entryText
-                                                  process f ab bb tol ib "Biseccion "salida
+                                                  let r = biseccion fun ab bb tolb (read ib) "abs"
+                                                  set salida [entryText := (show r)]
                                             else
                                                 if (unsafePerformIO(toggleButtonGetActive radio6))
                                                  then do
-                                                        an <- get an entryText
-                                                        bn <- get bn entryText
-                                                        toln <- get toln entryText
+                                                        san <- get an entryText
+                                                        sbn <- get bn entryText
+                                                        stoln <- get toln entryText
                                                         inn <- get inn entryText
-                                                        process f an bn toln inn "Newton " salida
+                                                        an <- parseIO pFunc (funScanTxt san)
+                                                        bn <- parseIO pFunc (funScanTxt sbn)
+                                                        toln <- parseIO pFunc (funScanTxt stoln)
+                                                        let r = newton fun bn an toln (read inn) "abs"
+                                                        set salida [entryText := r]
                                                  else 
                                                      if (unsafePerformIO(toggleButtonGetActive radio7))
                                                       then do
-                                                             as <- get as entryText
-                                                             bs <- get bs entryText
-                                                             tols <- get tols entryText
+                                                             sas <- get as entryText
+                                                             sbs <- get bs entryText
+                                                             stols <- get tols entryText
                                                              ins <- get ins entryText
-                                                             process f as bs tols ins "Secante " salida
+                                                             as <- parseIO pFunc (funScanTxt sas)
+                                                             bs <- parseIO pFunc (funScanTxt sbs)
+                                                             tols <- parseIO pFunc (funScanTxt stols)
+                                                             let r = secante fun as bs tols (read ins) "abs"
+                                                             set salida [entryText := r]
                                                       else 
                                                           if (unsafePerformIO(toggleButtonGetActive radio8))
                                                            then do
-                                                                  arm <- get arm entryText
-                                                                  tolrm <- get tolrm entryText
+                                                                  sarm <- get arm entryText
+                                                                  stolrm <- get tolrm entryText
                                                                   irm <- get inrm entryText
-                                                                  process f arm arm tolrm irm "raices " salida
+                                                                  arm <- parseIO pFunc (funScanTxt sarm)
+                                                                  tolrm <- parseIO pFunc (funScanTxt stolrm)
+                                                                  let r = raicesMult fun arm tolrm (read irm) "abs"
+                                                                  set salida [entryText := r ]
                                                            else do
-                                                                  a <- get a entryText
-                                                                  b <- get b entryText
+                                                                  sa <- get a entryText
+                                                                  sb <- get b entryText
                                                                   i <- get i entryText
-                                                                  process f a b i i "Busqueda incremental " salida
- 
+                                                                  a <- parseIO pFunc (funScanTxt sa)
+                                                                  b <- parseIO pFunc (funScanTxt sb) 
+                                                                  let r = busqdIncremental fun a b (read i) 
+                                                                  set salida [entryText := (show r)]
   
                           return table                                       
                                    
