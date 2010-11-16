@@ -83,7 +83,29 @@ setRadioState :: RadioButton -> IO ()
 setRadioState b = do
   state <- toggleButtonGetActive b
   label <- get b buttonLabel
-  putStrLn ("State " ++ label ++ " now is " ++ (show state))  
+  putStrLn ("State " ++ label ++ " now is " ++ (show state)) 
+
+ayudaGen :: IO () 
+ayudaGen = do
+  initGUI
+  windowAyuda <- windowNew
+  set windowAyuda [windowTitle := "Ayuda General", windowDefaultWidth := 600,
+                   windowDefaultHeight := 600 ]
+  windowSetIconFromFile windowAyuda "lambda"
+  contentPrincipal <- vBoxNew True 10
+  containerAdd windowAyuda contentPrincipal
+      
+  contentAyuda <- vBoxNew False 0
+  boxPackStart contentPrincipal contentAyuda PackNatural 0     
+  containerSetBorderWidth contentAyuda 10
+     
+  ayuda <- labelNew (Just "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n") 
+  containerAdd contentAyuda ayuda
+     
+  widgetShowAll windowAyuda
+  onDestroy windowAyuda mainQuit
+  mainGUI
+  
 
 ayudaENL :: IO()
 ayudaENL =  do
@@ -91,7 +113,7 @@ ayudaENL =  do
      windowAyuda <- windowNew
      set windowAyuda [windowTitle := "Ayudas Ecuaciones no lineales", windowDefaultWidth := 400,
                  windowDefaultHeight := 400 ]
-     
+     windowSetIconFromFile windowAyuda "lambda"
      contentPrincipal <- vBoxNew True 10
      containerAdd windowAyuda contentPrincipal
       
@@ -166,6 +188,221 @@ ayudaENL =  do
      onDestroy windowAyuda mainQuit
      mainGUI
       
+
+ayudaSE :: IO()
+ayudaSE =  do
+     initGUI
+     windowAyuda <- windowNew
+     set windowAyuda [windowTitle := "Ayudas Sistemas de Ecuaciones", windowDefaultWidth := 400,
+                 windowDefaultHeight := 400 ]
+     windowSetIconFromFile windowAyuda "lambda"
+     contentPrincipal <- vBoxNew True 10
+     containerAdd windowAyuda contentPrincipal
+      
+     contentAyuda <- vBoxNew False 0
+     boxPackStart contentPrincipal contentAyuda PackNatural 0     
+     containerSetBorderWidth contentAyuda 10
+     
+     text <- labelNew (Just "Seleccione el tema sobre el que necesita ayuda.")
+     boxPackStart contentAyuda text PackNatural 0
+     
+    
+  
+     radios <- vBoxNew False 0 
+     optionabi <- vBoxNew False 0
+     optionab <- vBoxNew  False 0
+     optionrf <- vBoxNew  False 0
+     optionpf <- vBoxNew  False 0
+     optionn <- vBoxNew False 0
+     options <- vBoxNew False 0
+     optionrm <- vBoxNew False 0
+     boxPackStart contentAyuda radios PackNatural 0
+     radioabi <- radioButtonNewWithLabel "Eliminacion Gaussiana "
+     radioab <- radioButtonNewWithLabelFromWidget radioabi "Eliminación con Pivoteo Parcial "
+     radiorf <- radioButtonNewWithLabelFromWidget radioab "ELiminación con Pivoteo Total "
+     radiopf <- radioButtonNewWithLabelFromWidget radiorf "Jacobi "
+     radion <- radioButtonNewWithLabelFromWidget radiopf "Gauss-Seidel"
+     boxPackStart optionabi radioabi PackNatural 5
+     boxPackStart optionab radioab PackNatural 5
+     boxPackStart optionrf radiorf PackNatural 5
+     boxPackStart optionpf radiopf PackNatural 5
+     boxPackStart optionab radion PackNatural 5
+     boxPackStart radios optionabi PackNatural 0
+     boxPackStart radios optionab PackNatural 0
+     boxPackStart radios optionrf PackNatural 0
+     boxPackStart radios optionpf PackNatural 0
+     boxPackStart radios optionn PackNatural 0
+     
+     textAyuda <- labelNew Nothing
+     boxPackStart contentPrincipal textAyuda PackNatural 0
+    
+
+     onToggled radioabi $ do
+               labelSetText textAyuda "Eliminación Gaussiana\n Es un"
+              
+     onToggled radioab $ do
+              labelSetText textAyuda "ELiminación con pivoteo parcial\n Se utiliza cuando los sistemas son inestables\n"
+           
+     onToggled radiorf $ do
+              labelSetText textAyuda "ELiminación con pivoteo total\n Se utiliza cuando los sistemas son inestables\n"
+             
+     onToggled radiopf $ do
+              labelSetText textAyuda "Jacobi\n Método iterativo\n"
+             
+     onToggled radion $ do
+              labelSetText textAyuda "GaussSeidel\nMétodo iterativo"
+
+    
+     widgetShowAll windowAyuda
+     onDestroy windowAyuda mainQuit
+     mainGUI
+      
+
+ayudaInter :: IO()
+ayudaInter =  do
+     initGUI
+     windowAyuda <- windowNew
+     set windowAyuda [windowTitle := "Ayudas para Interpolación", windowDefaultWidth := 400,
+                 windowDefaultHeight := 400 ]
+     windowSetIconFromFile windowAyuda "lambda"
+     contentPrincipal <- vBoxNew True 10
+     containerAdd windowAyuda contentPrincipal
+      
+     contentAyuda <- vBoxNew False 0
+     boxPackStart contentPrincipal contentAyuda PackNatural 0     
+     containerSetBorderWidth contentAyuda 10
+     
+     text <- labelNew (Just "Seleccione el tema sobre el que necesita ayuda.")
+     boxPackStart contentAyuda text PackNatural 0
+     
+    
+  
+     radios <- vBoxNew False 0 
+     optionabi <- vBoxNew False 0
+     optionab <- vBoxNew  False 0
+     optionrf <- vBoxNew  False 0
+     optionpf <- vBoxNew  False 0
+    
+     boxPackStart contentAyuda radios PackNatural 0
+     radioabi <- radioButtonNewWithLabel "Newton "
+     radioab <- radioButtonNewWithLabelFromWidget radioabi "Lagrange "
+     radiorf <- radioButtonNewWithLabelFromWidget radioab "Trazadores Lineales "
+     radiopf <- radioButtonNewWithLabelFromWidget radiorf "Trazadores Cuadráticos "
+     radion <- radioButtonNewWithLabelFromWidget radiopf "Trazadores Cúbicos"
+   
+     boxPackStart optionabi radioabi PackNatural 5
+     boxPackStart optionab radioab PackNatural 5
+     boxPackStart optionrf radiorf PackNatural 5
+     boxPackStart optionpf radiopf PackNatural 5
+     boxPackStart optionab radion PackNatural 5
+     boxPackStart radios optionabi PackNatural 0
+     boxPackStart radios optionab PackNatural 0
+     boxPackStart radios optionrf PackNatural 0
+     boxPackStart radios optionpf PackNatural 0
+   
+     
+     textAyuda <- labelNew Nothing
+     boxPackStart contentPrincipal textAyuda PackNatural 0
+    
+
+     onToggled radioabi $ do
+               labelSetText textAyuda "Búsqueda Incremental"
+              
+     onToggled radioab $ do
+              labelSetText textAyuda "Bisección"
+           
+     onToggled radiorf $ do
+              labelSetText textAyuda "Regla Falsa"
+             
+     onToggled radiopf $ do
+              labelSetText textAyuda "Punto Fijo"
+   
+
+    
+     widgetShowAll windowAyuda
+     onDestroy windowAyuda mainQuit
+     mainGUI
+      
+ayudaint :: IO()
+ayudaint =  do
+     initGUI
+     windowAyuda <- windowNew
+     set windowAyuda [windowTitle := "Ayudas Integración", windowDefaultWidth := 400,
+                 windowDefaultHeight := 400 ]
+     windowSetIconFromFile windowAyuda "lambda"
+     contentPrincipal <- vBoxNew True 10
+     containerAdd windowAyuda contentPrincipal
+      
+     contentAyuda <- vBoxNew False 0
+     boxPackStart contentPrincipal contentAyuda PackNatural 0     
+     containerSetBorderWidth contentAyuda 10
+     
+     text <- labelNew (Just "Seleccione el tema sobre el que necesita ayuda.")
+     boxPackStart contentAyuda text PackNatural 0
+     
+    
+  
+     radios <- vBoxNew False 0 
+     optionabi <- vBoxNew False 0
+     optionab <- vBoxNew  False 0
+     optionrf <- vBoxNew  False 0
+     optionpf <- vBoxNew  False 0
+     optionn <- vBoxNew False 0
+     options <- vBoxNew False 0
+     optionrm <- vBoxNew False 0
+     boxPackStart contentAyuda radios PackNatural 0
+     radioabi <- radioButtonNewWithLabel "Trapecio sencillo "
+     radioab <- radioButtonNewWithLabelFromWidget radioabi "Trapecio generalizado "
+     radiorf <- radioButtonNewWithLabelFromWidget radioab "Simpson 1/3 sencillo "
+     radiopf <- radioButtonNewWithLabelFromWidget radiorf "Simpson 1/3 generalizado"
+     radion <- radioButtonNewWithLabelFromWidget radiopf "Simpson 3/8 sencillo"
+     radioss <- radioButtonNewWithLabelFromWidget radion "Trapecio generalizado iterativo "
+     radiorm <- radioButtonNewWithLabelFromWidget radioss "Simpson 1/3 generalizado iterativo"
+     boxPackStart optionabi radioabi PackNatural 5
+     boxPackStart optionab radioab PackNatural 5
+     boxPackStart optionrf radiorf PackNatural 5
+     boxPackStart optionpf radiopf PackNatural 5
+     boxPackStart optionab radion PackNatural 5
+     boxPackStart optionrf radioss PackNatural 5
+     boxPackStart optionpf radiorm PackNatural 5
+     boxPackStart radios optionabi PackNatural 0
+     boxPackStart radios optionab PackNatural 0
+     boxPackStart radios optionrf PackNatural 0
+     boxPackStart radios optionpf PackNatural 0
+     boxPackStart radios optionn PackNatural 0
+     boxPackStart radios options PackNatural 0
+     boxPackStart radios optionrm PackNatural 0
+     
+     textAyuda <- labelNew Nothing
+     boxPackStart contentPrincipal textAyuda PackNatural 0
+    
+
+     onToggled radioabi $ do
+               labelSetText textAyuda "Trapecio sencillo"
+              
+     onToggled radioab $ do
+              labelSetText textAyuda "Trapecio generalizado"
+           
+     onToggled radiorf $ do
+              labelSetText textAyuda "Simpson 1/3 sencillo"
+             
+     onToggled radiopf $ do
+              labelSetText textAyuda "Simpson 1/3 generalizado"
+             
+     onToggled radion $ do
+              labelSetText textAyuda "Simpson 3/8 sencillo"
+             
+     onToggled radioss $ do
+              labelSetText textAyuda "Trapecio generalizado iterativo"
+             
+     onToggled radiorm $ do
+              labelSetText textAyuda "Simpson 1/3 generalizado iterativo"
+            
+
+    
+     widgetShowAll windowAyuda
+     onDestroy windowAyuda mainQuit
+     mainGUI
 
 mtos' :: Matriz -> Integer -> String 
 mtos' au n

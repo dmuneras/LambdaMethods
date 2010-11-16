@@ -53,7 +53,7 @@ interpolacion =  do
                    eval <- buttonNewWithLabel "Evaluar"
                    boxPackStart content eval  PackNatural 0
                    graficar <- buttonNewWithLabel "Graficar"
-                   boxPackStart content graficar  PackNatural 0
+                   --boxPackStart content graficar  PackNatural 0
                    ayuda <- buttonNewWithLabel "¿Necesitas ayuda?"
                    boxPackStart content ayuda  PackNatural 0
 
@@ -98,7 +98,8 @@ interpolacion =  do
                    radio5 <- radioButtonNewWithLabelFromWidget radio4 " Interpolar con Trazadores Cúbicos"
                    boxPackStart option radio5 PackNatural 5
                    boxPackStart cubicointer option PackNatural 0
-                   
+                   onClicked ayuda $ do
+                     ayudaInter
                    onClicked eval $ do
                                       px <- get puntosx entryText 
                                       listx <- parseIO pListDouble (funScanTxt px)

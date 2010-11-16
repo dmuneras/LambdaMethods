@@ -3,6 +3,7 @@ import InterfazENL
 import InterfazSE
 import InterfazInterpolacion
 import InterfazIntegracion
+import FuncionesInterfaz
 import Graphics.UI.Gtk
 
 
@@ -69,7 +70,7 @@ main= do
 
      actionSetSensitive cuta True
      onActionActivate exia (widgetDestroy window)
-
+     onActionActivate hlpa ayudaGen
      widgetShowAll window
      onDestroy window mainQuit
      mainGUI

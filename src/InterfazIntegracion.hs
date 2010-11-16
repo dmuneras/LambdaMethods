@@ -288,7 +288,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           
                           {-CAPTURA DE EVENTO DEL GRAFICADOR-}
                           onClicked ayuda $ do 
-                            ayudaENL
+                            ayudaint
                           onClicked graficar $ do
                                 s <- get entrada entryText
                                 f <- parseIO pFunc (funScanTxt s)

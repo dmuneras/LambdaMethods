@@ -35,18 +35,25 @@ sistemasEcuaciones= do
                       tableAttachDefaults table grafMatriz 0 1 1 2
                       textViewSetEditable grafMatriz False
                       buffer <- textViewGetBuffer grafMatriz
+                      labelbuffer <- labelNew (Just "")
+                      containerAdd sistem labelbuffer
                       labelmm <- labelNew (Just "Matriz resultante")
                       labelm <- labelNew (Just "Resultados")
+                   
                       containerAdd sistem labelm
                       containerAdd sistem labelmm
+                      
                       
                       {-RESULTADOS-}
                       resu <- vBoxNew False 0
                       salida <- entryNew
+                      ayuda <- buttonNewWithLabel "¿Necesitas ayuda?"
                       tableAttachDefaults table resu 0 1 2 3
                       boxPackStart resu labels PackNatural 0
                       boxPackStart resu salida PackNatural 0
                       boxPackStart resu eval PackNatural 0
+                      boxPackStart resu ayuda PackNatural 0
+                      
                       
                       
                       {-METODOS DIRECTOS-}
@@ -172,6 +179,8 @@ sistemasEcuaciones= do
                       boxPackStart viterativo btolj PackNatural 0
                       boxPackStart viterativo bij PackNatural 0
                      
+                      onClicked ayuda $ do 
+                            ayudaSE
                       onClicked eval $ do
                         s <- get values entryText
                         n <- get tamaño entryText
@@ -181,21 +190,21 @@ sistemasEcuaciones= do
                                let result = eGaussSim (leerMatrizAu (read n) au) (read n)
                                set salida [entryText := show(result)]
                                let mat = mtos'(matrizEGaussSim (leerMatrizAu (read n) au) (read n)) (read n)
-                               textBufferSetText buffer (show mat)
+                               textBufferSetText buffer mat
                          else
                             if (unsafePerformIO(toggleButtonGetActive radio2))
                              then do
                                    let result = eGaussPParcial (leerMatrizAu (read n) au) (read n)
                                    set salida [entryText := show(result)]
                                    let mat = mtos'(matrizEGaussParcial (leerMatrizAu (read n) au) (read n)) (read n)
-                                   textBufferSetText buffer (show mat)
+                                   textBufferSetText buffer  mat
                              else
                                 if (unsafePerformIO(toggleButtonGetActive radio3))
                                  then do
                                        let result = eGaussPTotal (leerMatrizAu (read n) au) (read n)
                                        set salida [entryText := show(result)]
                                        let mat = mtos'(matrizEGaussTotal(leerMatrizAu (read n) au) (read n)) (read n)
-                                       textBufferSetText buffer (show mat)
+                                       textBufferSetText buffer mat
                                        
                                  else do
                                         sxo <- get xoj entryText
