@@ -96,7 +96,7 @@ act' b e
 indOper :: Integer -> Matriz -> Integer -> Matriz
 indOper n om k
         |(aumentada om) == False = listArray (((k+1),k), (n,n)) (elems om)
-        | otherwise = listArray (((k+1),k), ((n-1),n)) (elems om)
+        | otherwise = listArray (((k+1),k), (n,(n+1))) (elems om)
                  
 
 aumentada :: Matriz -> Bool
