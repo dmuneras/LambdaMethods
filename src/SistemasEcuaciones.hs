@@ -16,8 +16,8 @@ matrizEGaussSim a n = etapak a n (n-1)
 {-Funcion que calcula la matriz 'a' en la etapa pasada como parametro aplicando eliminacion gaussiana simple
 -}
 etapak :: Matriz -> Integer -> Integer -> Matriz
-etapak a n 1 = actualizar a (indOper a (submatriz (operm a 1) (n-1)) 1)
-etapak a n k = actualizar ant (indOper ant (submatriz (operm ant k) (n-k) )k )
+etapak a n 1 = actualizar a (indOper n (submatriz (operm a 1) (n-1)) 1)
+etapak a n k = actualizar ant (indOper n (submatriz (operm ant k) (n-k) )k )
                where ant = etapak a n (k-1)
 
 {-Funcion transforma la lista de nuevas filas para la etapa k arrojadas en nuevasFilas y las transforma en una matriz que a su vez sera agregada en la matriz principal debajo de la fila pivote
@@ -69,8 +69,8 @@ buscarMayorTotal m c
 {-Funcion que calcula la matriz 'a' en la etapa pasada como parametro aplicando eliminacion gaussiana con pivoteo total-}
 etapakTotal :: Matriz -> Integer -> Integer -> Matriz
 etapakTotal a n k
-              | (k == 1) = actualizar ap (indOper ap (submatriz (operm ap 1) (n-1)) 1)
-              | (k > 1) = actualizar ant (indOper ant (submatriz (operm ant k) (n-k) )k )
+              | (k == 1) = actualizar ap (indOper n (submatriz (operm ap 1) (n-1)) 1)
+              | (k > 1) = actualizar ant (indOper n (submatriz (operm ant k) (n-k) )k )
               | (otherwise) = error "Fuera de rango, valor negativo"
               where ap = pivoteoTotal a k
                     ant = pivoteoTotal (etapakTotal a n (k-1)) k
@@ -97,8 +97,8 @@ buscarMayorParcial m c = head (filter (\x -> (snd x == (mayor2 (f (assocs(darCol
 -}
 etapakParcial :: Matriz -> Integer -> Integer -> Matriz
 etapakParcial a n k
-              | (k == 1) = actualizar ap (indOper ap  (submatriz (operm ap 1) (n-1)) 1)
-              | (k > 1) = actualizar  ant (indOper ant (submatriz (operm ant k) (n-k))k )
+              | (k == 1) = actualizar ap (indOper n  (submatriz (operm ap 1) (n-1)) 1)
+              | (k > 1) = actualizar  ant (indOper n (submatriz (operm ant k) (n-k))k )
               | (otherwise) = error "Fuera de rango, valor negativo"
               where ap = pivoteoParcial a k
                     ant = pivoteoParcial (etapakParcial a n (k-1)) k

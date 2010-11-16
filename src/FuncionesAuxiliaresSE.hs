@@ -93,11 +93,11 @@ act' b e
 
 
 {-Funcion que da a cada nuevo valor su respectivo indice para ser ubicado en la matriz -}
-indOper :: Matriz -> Matriz -> Integer -> Matriz
-indOper a om k
-        |(aumentada a) == False = listArray (((k+1),k), (n,n)) (elems om)
+indOper :: Integer -> Matriz -> Integer -> Matriz
+indOper n om k
+        |(aumentada om) == False = listArray (((k+1),k), (n,n)) (elems om)
         | otherwise = listArray (((k+1),k), ((n-1),n)) (elems om)
-                 where n = snd(snd(bounds a))
+                 
 
 aumentada :: Matriz -> Bool
 aumentada a 
