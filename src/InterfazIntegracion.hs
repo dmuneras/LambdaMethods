@@ -25,12 +25,14 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           boxPackStart content salida PackNatural 0
                           eval <- buttonNewWithLabel "Evaluar"
                           boxPackStart content eval  PackNatural 0
+                          graficar <- buttonNewWithLabel "Graficar"
+                          boxPackStart content graficar  PackNatural 0
                           ayuda <- buttonNewWithLabel "¿Necesitas ayuda?"
                           boxPackStart content ayuda  PackNatural 0
                           
                           {-TRAPECIO SENCILLO-}
 
-                          trapecioSenc <- hBoxNew False 0
+                          trapecioSenc <- hBoxNew False 40
                           option <- vBoxNew False 0
                           tsa <- vBoxNew False 0
                           tsb <- vBoxNew False 0 
@@ -57,7 +59,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
    
                           {-TRAPECIO GENERALIZADO-}
   
-                          trapecioGe <- hBoxNew False 6 
+                          trapecioGe <- hBoxNew False 10
                           optionb <- vBoxNew False 0
                           batg <- vBoxNew False 0
                           bbtg <- vBoxNew False 0 
@@ -93,7 +95,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
 
                           {-SIMPSON 1/3 SENCILLO-}
   
-                          simpson13s <- hBoxNew False 6
+                          simpson13s <- hBoxNew False 10
                           optionr <- vBoxNew False 0
                           bass <- vBoxNew False 0
                           bbss <- vBoxNew False 0 
@@ -119,7 +121,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           boxPackStart bbss bss PackNatural 0
                           
                           {-SIMPSON 1/3 GENERALIZADO-}
-                          simpson13g <- hBoxNew False 0
+                          simpson13g <- hBoxNew False 10
                           optionp <- vBoxNew False 0
                           basg <- vBoxNew False 0
                           bbsg <- vBoxNew False 0 
@@ -153,7 +155,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
 
                           {-SIMPSON 3/8 SENCILLO-}
                           
-                          simpson38s <- hBoxNew False 0
+                          simpson38s <- hBoxNew False 40
                           optionn <- vBoxNew False 0
                           basos <- vBoxNew False 0
                           bbsos <- vBoxNew False 0 
@@ -179,7 +181,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
    
                        
                           {-TRAPECIO ITERATIVO-} 
-                          traIter <- hBoxNew False 0
+                          traIter <- hBoxNew False 10
                           options <- vBoxNew False 0
                           bati <- vBoxNew False 0
                           bbti <- vBoxNew False 0 
@@ -228,7 +230,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           boxPackStart biti iti PackNatural 0
                           
                           {-SIMPSON 1/3 ITERATIVO-}
-                          simpson13iter <- hBoxNew False 0 
+                          simpson13iter <- hBoxNew False 10 
                           optionrm <- vBoxNew False 0
                           basi <- vBoxNew False 0
                           bbsi <- vBoxNew False 0
@@ -283,10 +285,14 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           onToggled radio3 (setRadioState radio3)
                           onToggled radio4 (setRadioState radio4)
                           onToggled radio5 (setRadioState radio5)
-
+                          
                           {-CAPTURA DE EVENTO DEL GRAFICADOR-}
                           onClicked ayuda $ do 
                             ayudaENL
+                          onClicked graficar $ do
+                                s <- get entrada entryText
+                                f <- parseIO pFunc (funScanTxt s)
+                                graficaXY f
                                                     
                           onClicked eval $ do
                                 s <- get entrada entryText

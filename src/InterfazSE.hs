@@ -15,13 +15,13 @@ import Foreign
 sistemasEcuaciones :: IO Table
 sistemasEcuaciones= do
                       table <- tableNew 4 1 False
-                      content <- vBoxNew False 2
+                      content <- vBoxNew False 4
                       sistem <- vBoxNew False 4
                       grafMatriz <- textViewNew
                       tableAttachDefaults table content 0 1 0 1
                       values <- entryNew
                       valuesb <- entryNew
-                      labelv <- labelNew (Just "Ingrese matriz aumentada para Eliminaciones Gaussianas o matriz de coeficientes para Métodos Iterativos (Por filas y elementos separados por espacios")
+                      labelv <- labelNew (Just "Ingrese matriz aumentada para Eliminaciones Gaussianas o matriz de coeficientes para Métodos Iterativos (Por filas y elementos separados por espacios)")
                       labelb <- labelNew (Just "Ingrese el vector de términos independientes (Elementos separados por espacios)")
                       labels <- labelNew (Just "Valores de las incognitas")
                       eval <- buttonNewWithLabel "Evaluar"
@@ -51,28 +51,40 @@ sistemasEcuaciones= do
                       
                       {-METODOS DIRECTOS-}
                       directosp <- vBoxNew False 5
-                      directos <- hBoxNew False 5
-                      tama <- hBoxNew False 0
+                      directosaux <- hBoxNew False 5
+                      directos <- vBoxNew False 5
+                      directosh <- vBoxNew False 5
+                      directoshh <- vBoxNew False 5
+                      directoshhh <- vBoxNew False 5
+                      directoshhhh <- vBoxNew False 5
+                      directoshhhhh <- vBoxNew False 5
+                      tama <- vBoxNew False 0
                       tableAttachDefaults table directosp 0 1 3 4
                       tamaño <- entryNew
                       labeld <- labelNew (Just "Métodos directos")
-                      labeltama <- labelNew (Just "Tamaño")
+                      labeltama <- labelNew (Just "Tamaño del sistema")
                       containerAdd tama labeltama
                       containerAdd tama tamaño
                       containerAdd directosp labeld
-                      containerAdd directos tama
-                      containerAdd directosp directos
+                      containerAdd directosaux directos
+                      containerAdd directosaux tama
+                      containerAdd directosaux directosh
+                      containerAdd directosaux directoshh
+                      containerAdd directosaux directoshhh
+                      containerAdd directosaux directoshhhh
+                      containerAdd directosaux directoshhhhh
+                      containerAdd directosp directosaux
 
                       {-ELIMINACION GAUSSIANA SIMPLE-}
-                      gsim <- hBoxNew False 10
-                      option <- vBoxNew False 0
+                      gsim <- vBoxNew False 5
+                      option <- hBoxNew False 0
                       containerAdd directos gsim
                       radio1 <- radioButtonNewWithLabel "Eliminación Gaussiana Simple"
                       boxPackStart option radio1 PackNatural 5
                       boxPackStart gsim option PackNatural 0
  
                       {-ELIMINACION CON PIVOTEO PARCIAL-}
-                      gparcial <- hBoxNew False 10
+                      gparcial <- hBoxNew False 5
                       optionp <- vBoxNew False 0
                       containerAdd directos gparcial
                       radio2 <- radioButtonNewWithLabelFromWidget radio1 "Eliminación con Pivoteo Parcial"
@@ -80,7 +92,7 @@ sistemasEcuaciones= do
                       boxPackStart gparcial optionp PackNatural 0
                       
                       {-ELIMINACION CON PIVOTEO TOTAL-}
-                      gtotal <- hBoxNew False 25
+                      gtotal <- hBoxNew False 5
                       optiont <- vBoxNew False 0
                       containerAdd directos gtotal
                       radio3 <- radioButtonNewWithLabelFromWidget radio2 "Eliminación con Pivoteo Total"
@@ -102,12 +114,7 @@ sistemasEcuaciones= do
                       blaj <- vBoxNew False 5
                       btolj <- vBoxNew False 5
                       bij <- vBoxNew False 5
-                      --boxPackStart viterativo labelen PackNatural 0
-                      boxPackStart viterativo bxoj PackNatural 0
-                      boxPackStart viterativo bnj PackNatural 0
-                      boxPackStart viterativo blaj PackNatural 0
-                      boxPackStart viterativo btolj PackNatural 0
-                      boxPackStart viterativo bij PackNatural 0
+  
                       
                       labela <- labelNew (Just "Valores iniciales")
                       miscSetAlignment labela 0 0
@@ -159,6 +166,11 @@ sistemasEcuaciones= do
                       containerAdd optioniter seidel
                       containerAdd viterativo optioniter
                       containerAdd iterativo viterativo
+                      boxPackStart viterativo bxoj PackNatural 0
+                      boxPackStart viterativo bnj PackNatural 0
+                      boxPackStart viterativo blaj PackNatural 0
+                      boxPackStart viterativo btolj PackNatural 0
+                      boxPackStart viterativo bij PackNatural 0
                      
                       onClicked eval $ do
                         s <- get values entryText
