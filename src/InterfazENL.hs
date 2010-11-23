@@ -31,10 +31,10 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                           
                           {-TIPO DE ERROR-}
                           errores <- hBoxNew False 0
-                          radio1 <- radioButtonNewWithLabel "Error Absoluto"
-                          containerAdd errores radio1
-                          radioe <- radioButtonNewWithLabelFromWidget radio1 "Error Relativo"
-                          containerAdd errores radioe
+                          radioabs <- radioButtonNewWithLabel "Error Absoluto"
+                          containerAdd errores radioabs
+                          radiorel  <- radioButtonNewWithLabelFromWidget radioabs "Error Relativo"
+                          containerAdd errores radiorel
                           containerAdd content errores
 
                           {-BUSQUEDAS INCREMENTALES-}
@@ -346,7 +346,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                                         bpp <- parseIO pFunc (funScanTxt sbp)
                                         tolpp <- parseIO pFunc (funScanTxt stolp)
                                         ipp <- get ip entryText
-                                        let r = puntoFijo fun bpp app tolpp (read ipp) "abs"
+                                        let r = puntoFijo fun bpp app tolpp (read ipp)  (tipoError [radioabs,radiorel])
                                         set salida [entryText := show(r)]
                                  else        
                                      if (unsafePerformIO(toggleButtonGetActive radio4))
@@ -358,7 +358,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                                              br <- parseIO pFunc (funScanTxt sbr)
                                              tolr <- parseIO pFunc (funScanTxt stolr)
                                              ir <- get ir entryText
-                                             let r = reglaFalsa fun ar br tolr (read ir) "abs"
+                                             let r = reglaFalsa fun ar br tolr (read ir)  (tipoError [radioabs,radiorel])
                                              set salida [entryText := show(r)]
                                       else
                                           if (unsafePerformIO(toggleButtonGetActive radio3))
@@ -370,7 +370,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                                                   bb <- parseIO pFunc (funScanTxt sbb)
                                                   tolb <- parseIO pFunc (funScanTxt stolb)
                                                   ib <- get ib entryText
-                                                  let r = biseccion fun ab bb tolb (read ib) "abs"
+                                                  let r = biseccion fun ab bb tolb (read ib)  (tipoError [radioabs,radiorel])
                                                   set salida [entryText := (show r)]
                                             else
                                                 if (unsafePerformIO(toggleButtonGetActive radio6))
@@ -382,7 +382,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                                                         an <- parseIO pFunc (funScanTxt san)
                                                         bn <- parseIO pFunc (funScanTxt sbn)
                                                         toln <- parseIO pFunc (funScanTxt stoln)
-                                                        let r = newton fun bn an toln (read inn) "abs"
+                                                        let r = newton fun bn an toln (read inn)  (tipoError [radioabs,radiorel])
                                                         set salida [entryText := r]
                                                  else 
                                                      if (unsafePerformIO(toggleButtonGetActive radio7))
@@ -394,7 +394,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                                                              as <- parseIO pFunc (funScanTxt sas)
                                                              bs <- parseIO pFunc (funScanTxt sbs)
                                                              tols <- parseIO pFunc (funScanTxt stols)
-                                                             let r = secante fun as bs tols (read ins) "abs"
+                                                             let r = secante fun as bs tols (read ins)  (tipoError [radioabs,radiorel])
                                                              set salida [entryText := r]
                                                       else 
                                                           if (unsafePerformIO(toggleButtonGetActive radio8))
@@ -404,7 +404,7 @@ ecuacionesNoLineales = do table <- tableNew 9 1 False
                                                                   irm <- get inrm entryText
                                                                   arm <- parseIO pFunc (funScanTxt sarm)
                                                                   tolrm <- parseIO pFunc (funScanTxt stolrm)
-                                                                  let r = raicesMult fun arm tolrm (read irm) "abs"
+                                                                  let r = raicesMult fun arm tolrm (read irm) (tipoError [radioabs,radiorel])
                                                                   set salida [entryText := r ]
                                                            else do
                                                                   sa <- get a entryText

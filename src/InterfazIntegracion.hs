@@ -179,7 +179,19 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           bsos <- entryNew 
                           boxPackStart bbsos bsos PackNatural 0
    
-                       
+                          {-MÉTODOS ITERATIVOS-}
+                          meiter <- vBoxNew False 5
+                          labeliter <- labelNew (Just "Métodos Iterativos")
+                          boxPackStart meiter labeliter PackNatural 0
+                             
+                            {-TIPO DE ERROR-}
+                          errores <- hBoxNew False 0
+                          radioabs <- radioButtonNewWithLabel "Error Absoluto"
+                          containerAdd errores radioabs
+                          radiorel  <- radioButtonNewWithLabelFromWidget radioabs "Error Relativo"
+                          containerAdd errores radiorel
+                          containerAdd meiter errores
+
                           {-TRAPECIO ITERATIVO-} 
                           traIter <- hBoxNew False 10
                           options <- vBoxNew False 0
@@ -188,8 +200,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           btolti<- vBoxNew False 0
                           bnti <- vBoxNew False 0
                           biti <- vBoxNew False 0
- 
-                          tableAttachDefaults table traIter 0 1 7 8 
+                          boxPackStart meiter traIter PackNatural 0
                           radio7 <- radioButtonNewWithLabelFromWidget radio6 "Trapecio Iterativo"
                           boxPackStart traIter options PackNatural 0
                           boxPackStart options radio7 PackNatural 5
@@ -238,7 +249,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           bnsi <- vBoxNew False 0
                           bisi <- vBoxNew False 0
  
-                          tableAttachDefaults table simpson13iter 0 1 8 9 
+                          boxPackStart meiter simpson13iter PackNatural 0
                           radio8 <- radioButtonNewWithLabelFromWidget radio7 "Simpson 1/3 Iterativo"
                           boxPackStart simpson13iter optionrm PackNatural 0
                           boxPackStart optionrm radio8 PackNatural 5
@@ -278,6 +289,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                           insi <- entryNew
                           boxPackStart bisi insi PackNatural 0
                           
+                          tableAttachDefaults table  meiter 0 1 7 8
 
                           {-FUNCIONES PARA CONTROLAR LOS EVENTOS-}
                           toggleButtonSetActive radio2 True
@@ -357,7 +369,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                                                                   pb <- parseIO pFunc (funScanTxt b)
                                                                   ptol <- parseIO pFunc (funScanTxt tol)
                                                                   pn <- parseIO pDouble (funScanTxt n)
-                                                                  let result = trapecioIter f pa pb pn ptol (read i) "abs"
+                                                                  let result = trapecioIter f pa pb pn ptol (read i) (tipoError [radioabs,radiorel])
                                                                   set salida [entryText := show(result)]
                                                            else do
                                                                   asi <- get asi entryText
@@ -369,7 +381,7 @@ interfaz_integracion = do table <- tableNew 9 1 False
                                                                   pbsi <- parseIO pFunc (funScanTxt bsi)
                                                                   ptolsi <- parseIO pFunc (funScanTxt tolsi)
                                                                   pnsi <- parseIO pDouble (funScanTxt nsi)
-                                                                  let r = simpson13Iter f pasi pbsi pnsi ptolsi (read i) "abs"
+                                                                  let r = simpson13Iter f pasi pbsi pnsi ptolsi (read i) (tipoError [radioabs,radiorel])
                                                                   set salida [entryText := show(r)]
                                                                  
  

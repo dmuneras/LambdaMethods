@@ -32,8 +32,8 @@ sdaDerivada f  n = reduccion(((eval f ('x', n +/ h))) -/ (ton 2 */ (eval f ('x',
 --Funcion que recibe el tipo de error a calcular, los valores actual y anterior y retorna el error deseado
 error' :: String -> Func -> Func -> Func
 error' t act ant
-       | t == "abs" = eAbs act ant
-       | t == "rel" = eRel act ant
+       | t == "Error Absoluto" = eAbs act ant
+       | t == "Error Relativo" = eRel act ant
        | otherwise  = error "No existe ese tipo de error"
 
 --Funcion que calcula el error absoluto

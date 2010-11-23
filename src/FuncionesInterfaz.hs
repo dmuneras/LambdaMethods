@@ -14,60 +14,9 @@ import Foreign
 import Data.Array
 import Data.List
 
-process ::(EntryClass e) => String -> String -> String -> String -> String -> String -> e -> IO ()
-process f a b tol i p e  
-              | (p == "ver ecuacion parser ") = do a <- parseIO pFunc (funScanTxt f)
-                                                   let st = show a
-                                                   set e [ entryText := show st ]
-              | (p == "Busqueda incremental ") = do f <- parseIO pFunc (funScanTxt f)
-                                                    b <- parseIO pFunc (funScanTxt b)
-                                                    a <-parseIO pFunc (funScanTxt a)
-                                                    putStrLn ((show a)++ " incrementando " ++ (show b) ++ " iter " ++ (show i))
-                                                    let st = busqdIncremental f a b (read i)
-                                                    set e [entryText := show st]
-              | (p == "Biseccion ") = do f <- parseIO pFunc (funScanTxt f)
-                                         b <- parseIO pFunc (funScanTxt b)
-                                         a <-parseIO pFunc (funScanTxt a)
-                                         tol <- parseIO pFunc (funScanTxt tol)
-                                         putStrLn ("Biseccion "++"Intervalo "++ (show a) ++ "," ++ (show b) ++ " " ++ (show tol) ++ " "++ (show i))
-                                         let st = biseccion f a b tol (read i) "abs"
-                                         set e [entryText := st]
-             | (p == "Regla falsa ") = do f <- parseIO pFunc (funScanTxt f)
-                                          b <- parseIO pFunc (funScanTxt b)
-                                          a <-parseIO pFunc (funScanTxt a)
-                                          tol <- parseIO pFunc (funScanTxt tol)
-                                          putStrLn ("Regla falsa "++"Intervalo "++ (show a) ++ "," ++ (show b) ++ " " ++ (show tol) ++ " "++ (show i))
-                                          let st = reglaFalsa f a b tol (read i) "abs"
-                                          set e [entryText := st]
-              | (p == "Punto Fijo ") = do f <- parseIO pFunc (funScanTxt f)
-                                          g <- parseIO pFunc (funScanTxt a)
-                                          a <-parseIO pFunc (funScanTxt b)
-                                          tol <- parseIO pFunc (funScanTxt tol)
-                                          putStrLn ("puntof"++"Inicial "++(show a) ++ " g" ++ (show b) ++ " " ++ (show tol) ++ " "++ (show i))
-                                          let st = puntoFijo f a g tol (read i) "abs"
-                                          set e [entryText := st]
-              | (p == "Newton ") =     do f <- parseIO pFunc (funScanTxt f)
-                                          g <- parseIO pFunc (funScanTxt a)
-                                          a <-parseIO pFunc (funScanTxt b)
-                                          tol <- parseIO pFunc (funScanTxt tol)
-                                          putStrLn ("Newton"++"Inicial "++(show a) ++ " f'" ++ (show b) ++ " " ++ (show tol) ++ " "++ (show i))
-                                          let st = newton f a g tol (read i) "abs"
-                                          set e [entryText := st]
-              | (p == "Secante ") =    do f <- parseIO pFunc (funScanTxt f)
-                                          b <- parseIO pFunc (funScanTxt b)
-                                          a <-parseIO pFunc (funScanTxt a)
-                                          tol <- parseIO pFunc (funScanTxt tol)
-                                          putStrLn ("Secante "++"Iniciales "++ (show a) ++ "," ++ (show b) ++ " " ++ (show tol) ++ " "++ (show i)) 
-                                          let st = secante f a b tol (read i) "abs"
-                                          set e [entryText := st]
-              | (p == "raices ") =     do f <- parseIO pFunc (funScanTxt f)
-                                          a <-parseIO pFunc (funScanTxt a)
-                                          tol <- parseIO pFunc (funScanTxt tol)
-                                          putStrLn ("RaicesMult"++"Inicial "++ (show a) ++ "," ++ (show b) ++ " " ++ (show tol) ++ " "++ (show i)) 
-                                          let st = raicesMult f a tol (read i) "abs"
-                                          set e [entryText := st] 
-              | otherwise = set e [entryText := "todavia no"]
-
+{-retorna el tipo de error-}
+tipoError :: [RadioButton] -> String
+tipoError r = control (controlRadio r )
 
 {- Funcion que me retorna el texto utilizado como control en el process-}
 control :: RadioButton -> String
@@ -85,13 +34,12 @@ setRadioState b = do
   label <- get b buttonLabel
   putStrLn ("State " ++ label ++ " now is " ++ (show state)) 
 
-ayudaGen :: IO () 
-ayudaGen = do
+acercaDe :: IO () 
+acercaDe = do
   initGUI
   windowAyuda <- windowNew
-  set windowAyuda [windowTitle := "Ayuda General", windowDefaultWidth := 600,
-                   windowDefaultHeight := 600 ]
-  windowSetIconFromFile windowAyuda "lambda"
+  set windowAyuda [windowTitle := "Acerca de", windowDefaultWidth := 400,
+                   windowDefaultHeight := 400 ]
   contentPrincipal <- vBoxNew True 10
   containerAdd windowAyuda contentPrincipal
       
@@ -99,7 +47,7 @@ ayudaGen = do
   boxPackStart contentPrincipal contentAyuda PackNatural 0     
   containerSetBorderWidth contentAyuda 10
      
-  ayuda <- labelNew (Just "Lo sentimos, en el momento no tenemos idea de como abrir PDF desde haskell.") 
+  ayuda <- labelNew (Just acercaDetext) 
   containerAdd contentAyuda ayuda
      
   widgetShowAll windowAyuda
@@ -113,7 +61,6 @@ ayudaENL =  do
      windowAyuda <- windowNew
      set windowAyuda [windowTitle := "Ayudas Ecuaciones no lineales", windowDefaultWidth := 400,
                  windowDefaultHeight := 400 ]
-     windowSetIconFromFile windowAyuda "lambda"
      contentPrincipal <- vBoxNew True 10
      containerAdd windowAyuda contentPrincipal
       
@@ -195,7 +142,6 @@ ayudaSE =  do
      windowAyuda <- windowNew
      set windowAyuda [windowTitle := "Ayudas Sistemas de Ecuaciones", windowDefaultWidth := 400,
                  windowDefaultHeight := 400 ]
-     windowSetIconFromFile windowAyuda "lambda"
      contentPrincipal <- vBoxNew True 10
      containerAdd windowAyuda contentPrincipal
       
@@ -265,7 +211,6 @@ ayudaInter =  do
      windowAyuda <- windowNew
      set windowAyuda [windowTitle := "Ayudas para Interpolación", windowDefaultWidth := 400,
                  windowDefaultHeight := 400 ]
-     windowSetIconFromFile windowAyuda "lambda"
      contentPrincipal <- vBoxNew True 10
      containerAdd windowAyuda contentPrincipal
       
@@ -333,7 +278,6 @@ ayudaint =  do
      windowAyuda <- windowNew
      set windowAyuda [windowTitle := "Ayudas Integración", windowDefaultWidth := 400,
                  windowDefaultHeight := 400 ]
-     windowSetIconFromFile windowAyuda "lambda"
      contentPrincipal <- vBoxNew True 10
      containerAdd windowAyuda contentPrincipal
       
@@ -724,3 +668,14 @@ texttrapecio = "Regla del Trapecio\n" ++
            "Y reemplazando en la siguiente fórmula:\n" ++
 
            "I = (h/2) * [f(a) + 2* sum(medio) + f(b)]\n" 
+
+
+acercaDetext = "LAMBDA METHODS\n" ++
+               "Metodos Numericos en Haskell\n" ++
+               "Desarrolladores:\n" ++
+               "• Daniel Munera Sanchez\n" ++
+               "• Esteban Alarcon Ceballos\n" ++
+               "• Jose Luis Villa Palacio\n" ++
+               "Universidad EAFIT\n" ++
+               "Medellin-Colombia\n" ++
+               "2010\n"
